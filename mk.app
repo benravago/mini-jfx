@@ -2,12 +2,12 @@
 set -xe
 
 /opt/jdk15/bin/javac \
-  --module-path jre/fx \
+  --module-path dist/jre/fx \
   --add-modules=javafx.controls \
   app/HelloFX.java
 
-jre/bin/java \
-  --module-path jre/fx \
+dist/jre/bin/java \
+  --module-path dist/jre/fx \
   --add-modules=javafx.controls \
   -Djdk.gtk.verbose=true \
   -Dprism.verbose=true \
