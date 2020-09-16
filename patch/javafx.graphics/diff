@@ -1,0 +1,1088 @@
+diff -ur sdk/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java src/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java
+--- sdk/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java	2020-09-04 13:03:42.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java	2020-09-16 12:15:03.376241779 -0400
+@@ -25,7 +25,6 @@
+ 
+ package com.sun.javafx.application;
+ 
+-import java.awt.Desktop;
+ import java.io.File;
+ import java.net.URI;
+ import javafx.application.Application;
+@@ -133,14 +132,7 @@
+ 
+         @Override
+         public void showDocument(final String uri) {
+-            String osName = System.getProperty("os.name");
+             try {
+-                if (osName.startsWith("Mac OS")) {
+-                    Desktop.getDesktop().browse(URI.create(uri));
+-                } else if (osName.startsWith("Windows")) {
+-                    Runtime.getRuntime().exec(
+-                            "rundll32 url.dll,FileProtocolHandler " + uri);
+-                } else { //assume Unix or Linux
+                     String browser = null;
+                     for (String b : browsers) {
+                         if (browser == null && Runtime.getRuntime().exec(
+@@ -151,7 +143,6 @@
+                     if (browser == null) {
+                         throw new Exception("No web browser found");
+                     }
+-                }
+             } catch (Exception e) {
+                 // should not happen
+                 // dump stack for debug purpose
+diff -ur sdk/javafx.graphics/com/sun/javafx/font/FallbackResource.java src/javafx.graphics/com/sun/javafx/font/FallbackResource.java
+--- sdk/javafx.graphics/com/sun/javafx/font/FallbackResource.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/font/FallbackResource.java	2020-09-16 12:15:04.490228818 -0400
+@@ -227,13 +227,8 @@
+                 fallbacks = new FontResource[linkedFontFiles.size()];
+             } else {
+                 ArrayList<String>[] linkedFontInfo;
+-                if (PrismFontFactory.isMacOSX) {
+-                    linkedFontInfo =
+-                        PrismFontFactory.getLinkedFonts("Arial Unicode MS", true);
+-                } else {
+                     linkedFontInfo =
+                         PrismFontFactory.getLinkedFonts("Tahoma", true);
+-                }
+                 linkedFontFiles = linkedFontInfo[0];
+                 linkedFontNames = linkedFontInfo[1];
+                 fallbacks = new FontResource[linkedFontFiles.size()];
+diff -ur sdk/javafx.graphics/com/sun/javafx/font/LogicalFont.java src/javafx.graphics/com/sun/javafx/font/LogicalFont.java
+--- sdk/javafx.graphics/com/sun/javafx/font/LogicalFont.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/font/LogicalFont.java	2020-09-16 12:15:04.488228841 -0400
+@@ -180,8 +180,6 @@
+                 FontConfigManager.getFontConfigFont(family, bold, italic);
+             physicalFullName = fcCompFont.firstFont.fullName;
+             physicalFileName = fcCompFont.firstFont.fontFile;
+-        } else {
+-            physicalFamily = PrismFontFactory.getSystemFont(familyName);
+         }
+     }
+ 
+diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java
+--- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2020-09-16 12:15:04.498228724 -0400
+@@ -49,12 +49,7 @@
+ public abstract class PrismFontFactory implements FontFactory {
+ 
+     public static final boolean debugFonts;
+-    public static final boolean isWindows;
+     public static final boolean isLinux;
+-    public static final boolean isMacOSX;
+-    public static final boolean isIOS;
+-    public static final boolean isAndroid;
+-    public static final boolean isEmbedded;
+     public static final int cacheLayoutSize;
+     private static int subPixelMode;
+     public static final int SUB_PIXEL_ON = 1;
+@@ -68,8 +63,6 @@
+     private static final String jreDefaultFont   = "Lucida Sans Regular";
+     private static final String jreDefaultFontLC = "lucida sans regular";
+     private static final String jreDefaultFontFile = "LucidaSansRegular.ttf";
+-    private static final String CT_FACTORY = "com.sun.javafx.font.coretext.CTFactory";
+-    private static final String DW_FACTORY = "com.sun.javafx.font.directwrite.DWFactory";
+     private static final String FT_FACTORY = "com.sun.javafx.font.freetype.FTFactory";
+ 
+     /* We need two maps. One to hold pointers to the raw fonts, another
+@@ -85,12 +78,7 @@
+         new HashMap<String, CompositeFontResource>();
+ 
+     static {
+-        isWindows = PlatformUtil.isWindows();
+-        isMacOSX  = PlatformUtil.isMac();
+         isLinux   = PlatformUtil.isLinux();
+-        isIOS     = PlatformUtil.isIOS();
+-        isAndroid = PlatformUtil.isAndroid();
+-        isEmbedded = PlatformUtil.isEmbedded();
+         int[] tempCacheLayoutSize = {0x10000};
+ 
+         debugFonts = AccessController.doPrivileged(
+@@ -132,7 +120,7 @@
+                         }
+                     }
+ 
+-                    boolean lcdTextOff = isIOS || isAndroid || isEmbedded;
++                    boolean lcdTextOff = false;
+                     String defLCDProp = lcdTextOff ? "false" : "true";
+                     String lcdProp = System.getProperty("prism.lcdtext", defLCDProp);
+                     lcdEnabled = lcdProp.equals("true");
+@@ -162,9 +150,7 @@
+     }
+ 
+     private static String getNativeFactoryName() {
+-        if (isWindows) return DW_FACTORY;
+-        if (isMacOSX || isIOS) return CT_FACTORY;
+-        if (isLinux || isAndroid) return FT_FACTORY;
++        if (isLinux) return FT_FACTORY;
+         return null;
+     }
+ 
+@@ -440,28 +426,6 @@
+             }
+         }
+ 
+-        /* We have hard coded some of the most commonly used Windows fonts
+-         * so as to avoid the overhead of doing a lookup via GDI.
+-         */
+-        if (isWindows) {
+-            int style = ((bold ? 1 : 0)) + ((italic) ? 2 : 0);
+-            String fontFile = WindowsFontMap.findFontFile(lcFamilyName, style);
+-            if (fontFile != null) {
+-                fr = createFontResource(null, fontFile);
+-                if (fr != null) {
+-                    if (bold == fr.isBold() && italic == fr.isItalic() &&
+-                        !styleStr.isEmpty())
+-                    {
+-                        storeInMap(lcFamilyName+styleStr, fr);
+-                    }
+-                    if (wantComp) {  // wrap with fallback support
+-                        fr = new PrismCompositeFontResource(fr,
+-                                                       lcFamilyName+styleStr);
+-                    }
+-                    return fr;
+-                }
+-            }
+-        }
+ 
+         getFullNameToFileMap();
+         ArrayList<String> family = familyToFontListMap.get(lcFamilyName);
+@@ -594,39 +558,7 @@
+         PrismFontFile fr = null;
+         /* Still need decode the dfont (event when coretext is used)
+          * so that JFXFontFont can read it */
+-        if (isMacOSX) {
+-            DFontDecoder decoder = null;
+-            if (name != null) {
+-                if (file.endsWith(".dfont")) {
+-                    decoder = new DFontDecoder();
+-                    try {
+-                        decoder.openFile();
+-                        decoder.decode(name);
+-                        decoder.closeFile();
+-                        file = decoder.getFile().getPath();
+-                    } catch (Exception e) {
+-                        file = null;
+-                        decoder.deleteFile();
+-                        decoder = null;
+-                        if (PrismFontFactory.debugFonts) {
+-                            e.printStackTrace();
+-                        }
+-                    }
+-                }
+-            }
+-            if (file != null) {
+-                fr = createFontResource(name, file);
+-            }
+-            if (decoder != null) {
+-                if (fr != null) {
+-                    addDecodedFont(fr);
+-                } else {
+-                    decoder.deleteFile();
+-                }
+-            }
+-        } else {
+             fr = createFontResource(name, file);
+-        }
+         return fr;
+     }
+ 
+@@ -675,22 +607,6 @@
+             }
+         }
+ 
+-        /* We have hard coded some of the most commonly used Windows fonts
+-         * so as to avoid the overhead of doing a lookup via GDI.
+-         */
+-        if (isWindows && name != null) {
+-            String lcName = name.toLowerCase();
+-            String fontFile = WindowsFontMap.findFontFile(lcName, -1);
+-            if (fontFile != null) {
+-                fr = createFontResource(null, fontFile);
+-                if (fr != null) {
+-                    if (wantComp) {
+-                        fr = new PrismCompositeFontResource(fr, lcName);
+-                    }
+-                    return fr;
+-                }
+-            }
+-        }
+ 
+         getFullNameToFileMap(); // init maps
+ 
+@@ -729,22 +645,9 @@
+         // avoid loading the full windows map. Ignore drive letter
+         // as its common to install on D: too in multi-boot.
+         String fileKey;
+-        if (isWindows) {
+-            if (fileName.toLowerCase().contains("\\windows\\fonts")) {
+-                return true;
+-            }
+-            File f = new File(fileName);
+-            fileKey = f.getName();
+-        } else {
+-            if (isMacOSX && fileName.toLowerCase().contains("/library/fonts")) {
+-                // Most fonts are installed in either /System/Library/Fonts/
+-                // or /Library/Fonts/
+-                return true;
+-            }
+             File f = new File(fileName);
+             // fileToFontMap key is the full path on non-windows
+             fileKey = f.getPath();
+-        }
+ 
+         getFullNameToFileMap();
+         return fileToFontMap.get(fileKey.toLowerCase()) != null;
+@@ -879,9 +782,6 @@
+         }
+         getFullNameToFileMap();
+         String filename = fontToFileMap.get(name);
+-        if (isWindows) {
+-            filename = getPathNameWindows(filename);
+-        }
+ 
+         // Caller needs to check for null and explicitly request
+         // the JRE default font, if that is what is needed.
+@@ -962,33 +862,6 @@
+         fontRegInfo[0] = new ArrayList<String>();
+         fontRegInfo[1] = new ArrayList<String>();
+ 
+-        if (isMacOSX) {
+-            // Hotkey implementation of fallback font on Mac
+-            fontRegInfo[0].add("/Library/Fonts/Arial Unicode.ttf");
+-            fontRegInfo[1].add("Arial Unicode MS");
+-
+-            // Add Lucida Sans Regular to Mac OS X fallback list
+-            fontRegInfo[0].add(jreFontDir + jreDefaultFontFile);
+-            fontRegInfo[1].add(jreDefaultFont);
+-
+-            // Add Apple Symbols to Mac OS X fallback list
+-            fontRegInfo[0].add("/System/Library/Fonts/Apple Symbols.ttf");
+-            fontRegInfo[1].add("Apple Symbols");
+-
+-            // Add Apple Emoji Symbols to Mac OS X fallback list
+-            fontRegInfo[0].add("/System/Library/Fonts/Apple Color Emoji.ttc");
+-            fontRegInfo[1].add("Apple Color Emoji");
+-
+-            // Add CJK Ext B supplementary characters.
+-            fontRegInfo[0].add("/System/Library/Fonts/STHeiti Light.ttf");
+-            fontRegInfo[1].add("Heiti SC Light");
+-
+-            return fontRegInfo;
+-        }
+-        if (!isWindows) {
+-            return fontRegInfo;
+-        }
+-
+         if (addSearchFont) {
+             fontRegInfo[0].add(null);
+             fontRegInfo[1].add(searchFont);
+@@ -1363,8 +1236,6 @@
+         String lcName = name.toLowerCase();
+         if (LogicalFont.isLogicalFont(lcName)) return true;
+         if (lcName.startsWith("lucida sans")) return true;
+-        String systemFamily = getSystemFont(LogicalFont.SYSTEM).toLowerCase();
+-        if (lcName.startsWith(systemFamily)) return true;
+         return false;
+     }
+ 
+@@ -1375,19 +1246,7 @@
+ 
+     public static float getLCDContrast() {
+         if (lcdContrast == -1) {
+-            if (isWindows) {
+-                lcdContrast = getLCDContrastWin32() / 1000f;
+-            } else {
+-                /* REMIND: When using CoreText it likely already applies gamma
+-                 * correction to the glyph images. The current implementation does
+-                 * not take this into account when rasterizing the glyph. Thus,
+-                 * it is possible gamma correction is been applied twice to the
+-                 * final result.
+-                 * Consider using "1" for lcdContrast possibly produces visually
+-                 * more appealing results (although not strictly correct).
+-                 */
+                 lcdContrast = 1.3f;
+-            }
+         }
+         return lcdContrast;
+     }
+@@ -1738,39 +1597,7 @@
+             familyToFontListMap = new HashMap<String,ArrayList<String>>(50);
+             fileToFontMap = new HashMap<String,String>(100);
+ 
+-            if (isWindows) {
+-                getPlatformFontDirs();
+-                populateFontFileNameMap(tmpFontToFileMap,
+-                                        fontToFamilyNameMap,
+-                                        familyToFontListMap,
+-                                        Locale.ENGLISH);
+-
+-                if (debugFonts) {
+-                    System.err.println("Windows Locale ID=" + getSystemLCID());
+-                    logFontInfo(" *** WINDOWS FONTS BEFORE RESOLVING",
+-                                tmpFontToFileMap,
+-                                fontToFamilyNameMap,
+-                                familyToFontListMap);
+-                }
+-
+-                resolveWindowsFonts(tmpFontToFileMap,
+-                                    fontToFamilyNameMap,
+-                                    familyToFontListMap);
+-
+-                if (debugFonts) {
+-                    logFontInfo(" *** WINDOWS FONTS AFTER RESOLVING",
+-                                tmpFontToFileMap,
+-                                fontToFamilyNameMap,
+-                                familyToFontListMap);
+-                }
+-
+-            } else if (isMacOSX || isIOS) {
+-                MacFontFinder.populateFontFileNameMap(tmpFontToFileMap,
+-                                                      fontToFamilyNameMap,
+-                                                      familyToFontListMap,
+-                                                      Locale.ENGLISH);
+-
+-            } else if (isLinux) {
++            if (isLinux) {
+                 FontConfigManager.populateMaps(tmpFontToFileMap,
+                                                fontToFamilyNameMap,
+                                                familyToFontListMap,
+@@ -1781,11 +1608,6 @@
+                                 fontToFamilyNameMap,
+                                 familyToFontListMap);
+                 }
+-            } else if (isAndroid) {
+-               AndroidFontFinder.populateFontFileNameMap(tmpFontToFileMap,
+-                        fontToFamilyNameMap,
+-                        familyToFontListMap,
+-                        Locale.ENGLISH);
+            } else { /* unrecognised OS */
+                 fontToFileMap = tmpFontToFileMap;
+                 return fontToFileMap;
+@@ -1800,19 +1622,8 @@
+             }
+ 
+             fontToFileMap = tmpFontToFileMap;
+-            if (isAndroid) {
+-                populateFontFileNameMapGeneric(
+-                       AndroidFontFinder.getSystemFontsDir());
+-            }
+             populateFontFileNameMapGeneric(jreFontDir);
+ 
+-//             for (String keyName : fontToFileMap.keySet()) {
+-//               System.out.println("font="+keyName+" file="+ fontToFileMap.get(keyName));
+-//             }
+-
+-//             for (String keyName : familyToFontListMap.keySet()) {
+-//               System.out.println("family="+keyName);
+-//             }
+         }
+         return fontToFileMap;
+     }
+@@ -1926,79 +1737,15 @@
+         }
+     }
+ 
+-    static native int getLCDContrastWin32();
+-    private static native float getSystemFontSizeNative();
+-    private static native String getSystemFontNative();
+     private static float systemFontSize;
+-    private static String systemFontFamily = null;
+-    private static String monospaceFontFamily = null;
+ 
+     public static float getSystemFontSize() {
+         if (systemFontSize == -1) {
+-            if (isWindows) {
+-                systemFontSize = getSystemFontSizeNative();
+-            } else if (isMacOSX || isIOS) {
+-                systemFontSize = MacFontFinder.getSystemFontSize();
+-            } else if (isAndroid) {
+-               systemFontSize = AndroidFontFinder.getSystemFontSize();
+-            } else if (isEmbedded) {
+-                try {
+-                    int screenDPI = Screen.getMainScreen().getResolutionY();
+-                    systemFontSize = ((float) screenDPI) / 6f; // 12 points
+-                } catch (NullPointerException npe) {
+-                    // if no screen is defined
+-                    systemFontSize = 13f; // same as desktop Linux
+-                }
+-            } else {
+                 systemFontSize = 13f; // Gnome uses 13.
+-            }
+         }
+         return systemFontSize;
+     }
+ 
+-    /* Applies to Windows and Mac. Not used on Linux */
+-    public static String getSystemFont(String name) {
+-        if (name.equals(LogicalFont.SYSTEM)) {
+-            if (systemFontFamily == null) {
+-                if (isWindows) {
+-                    systemFontFamily = getSystemFontNative();
+-                    if (systemFontFamily == null) {
+-                        systemFontFamily = "Arial"; // play it safe.
+-                    }
+-                } else if (isMacOSX || isIOS) {
+-                    systemFontFamily = MacFontFinder.getSystemFont();
+-                    if (systemFontFamily == null) {
+-                        systemFontFamily = "Lucida Grande";
+-                    }
+-                } else if (isAndroid) {
+-                   systemFontFamily = AndroidFontFinder.getSystemFont();
+-                } else {
+-                    systemFontFamily = "Lucida Sans"; // for now.
+-                }
+-            }
+-            return systemFontFamily;
+-        } else if (name.equals(LogicalFont.SANS_SERIF)) {
+-            return "Arial";
+-        } else if (name.equals(LogicalFont.SERIF)) {
+-            return "Times New Roman";
+-        } else /* if (name.equals(LogicalFont.MONOSPACED)) */ {
+-            if (monospaceFontFamily == null) {
+-                if (isMacOSX) {
+-                    /* This code is intentionally commented:
+-                     * On the OS X the preferred monospaced font is Monaco,
+-                     * although this can be a good choice for most Mac application
+-                     * it is not suitable for JavaFX because Monaco does not
+-                     * have neither bold nor italic.
+-                     */
+-//                    monospaceFontFamily = MacFontFinder.getMonospacedFont();
+-                }
+-            }
+-            if (monospaceFontFamily == null) {
+-                monospaceFontFamily = "Courier New";
+-            }
+-            return monospaceFontFamily;
+-        }
+-    }
+ 
+     /* Called from PrismFontFile which caches the return value */
+     static native short getSystemLCID();
+diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java
+--- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2020-09-16 12:15:04.474229004 -0400
+@@ -1143,11 +1143,7 @@
+     static short nameLocaleID = getSystemLCID();
+ 
+     private static short getSystemLCID() {
+-        if (PrismFontFactory.isWindows) {
+-            return PrismFontFactory.getSystemLCID();
+-        } else {
+             return getLCIDFromLocale(Locale.getDefault());
+-        }
+     }
+ 
+     private OpenTypeGlyphMapper mapper = null;
+diff -ur sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java
+--- sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2020-09-16 12:15:04.248231633 -0400
+@@ -30,7 +30,6 @@
+ import com.sun.javafx.iio.bmp.BMPImageLoaderFactory;
+ import com.sun.javafx.iio.common.ImageTools;
+ import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
+-import com.sun.javafx.iio.ios.IosImageLoaderFactory;
+ import com.sun.javafx.iio.jpeg.JPEGImageLoaderFactory;
+ import com.sun.javafx.iio.png.PNGImageLoaderFactory;
+ import java.io.ByteArrayInputStream;
+@@ -123,13 +122,6 @@
+     private static int maxSignatureLength;
+ 
+     static {
+-        if (isIOS) {
+-            //On iOS we have single factory/ native loader
+-            //for all image formats
+-            loaderFactories = new ImageLoaderFactory[]{
+-                IosImageLoaderFactory.getInstance()
+-            };
+-        } else {
+             loaderFactories = new ImageLoaderFactory[]{
+                 GIFImageLoaderFactory.getInstance(),
+                 JPEGImageLoaderFactory.getInstance(),
+@@ -137,7 +129,6 @@
+                 BMPImageLoaderFactory.getInstance()
+                 // Note: append ImageLoadFactory for any new format here.
+             };
+-        }
+ 
+ //        loaderFactoriesByExtension = new HashMap(numExtensions);
+         loaderFactoriesBySignature = new HashMap<Signature, ImageLoaderFactory>(loaderFactories.length);
+@@ -260,13 +251,7 @@
+         ImageFrame[] images = null;
+ 
+         try {
+-            if (isIOS) {
+-                // no extension/signature recognition done here,
+-                // we always want the iOS native loader
+-                loader = IosImageLoaderFactory.getInstance().createImageLoader(input);
+-            } else {
+                 loader = getLoaderBySignature(input, listener);
+-            }
+             if (loader != null) {
+                 images = loadAll(loader, width, height, preserveAspectRatio, pixelScale, smooth);
+             } else {
+@@ -316,11 +301,7 @@
+                     theStream = ImageTools.createInputStream(input);
+                 }
+ 
+-                if (isIOS) {
+-                    loader = IosImageLoaderFactory.getInstance().createImageLoader(theStream);
+-                } else {
+                     loader = getLoaderBySignature(theStream, listener);
+-                }
+             } catch (IOException e) {
+                 throw new ImageStorageException(e.getMessage(), e);
+             }
+diff -ur sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java src/javafx.graphics/com/sun/javafx/tk/Toolkit.java
+--- sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2020-09-04 13:03:42.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2020-09-16 12:15:03.964234937 -0400
+@@ -108,56 +108,6 @@
+ 
+     private static final boolean verbose = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("javafx.verbose"));
+ 
+-    private static final String[] msLibNames = {
+-        "api-ms-win-core-console-l1-1-0",
+-        "api-ms-win-core-console-l1-2-0",
+-        "api-ms-win-core-datetime-l1-1-0",
+-        "api-ms-win-core-debug-l1-1-0",
+-        "api-ms-win-core-errorhandling-l1-1-0",
+-        "api-ms-win-core-file-l1-1-0",
+-        "api-ms-win-core-file-l1-2-0",
+-        "api-ms-win-core-file-l2-1-0",
+-        "api-ms-win-core-handle-l1-1-0",
+-        "api-ms-win-core-heap-l1-1-0",
+-        "api-ms-win-core-interlocked-l1-1-0",
+-        "api-ms-win-core-libraryloader-l1-1-0",
+-        "api-ms-win-core-localization-l1-2-0",
+-        "api-ms-win-core-memory-l1-1-0",
+-        "api-ms-win-core-namedpipe-l1-1-0",
+-        "api-ms-win-core-processenvironment-l1-1-0",
+-        "api-ms-win-core-processthreads-l1-1-0",
+-        "api-ms-win-core-processthreads-l1-1-1",
+-        "api-ms-win-core-profile-l1-1-0",
+-        "api-ms-win-core-rtlsupport-l1-1-0",
+-        "api-ms-win-core-string-l1-1-0",
+-        "api-ms-win-core-synch-l1-1-0",
+-        "api-ms-win-core-synch-l1-2-0",
+-        "api-ms-win-core-sysinfo-l1-1-0",
+-        "api-ms-win-core-timezone-l1-1-0",
+-        "api-ms-win-core-util-l1-1-0",
+-        "api-ms-win-crt-conio-l1-1-0",
+-        "api-ms-win-crt-convert-l1-1-0",
+-        "api-ms-win-crt-environment-l1-1-0",
+-        "api-ms-win-crt-filesystem-l1-1-0",
+-        "api-ms-win-crt-heap-l1-1-0",
+-        "api-ms-win-crt-locale-l1-1-0",
+-        "api-ms-win-crt-math-l1-1-0",
+-        "api-ms-win-crt-multibyte-l1-1-0",
+-        "api-ms-win-crt-private-l1-1-0",
+-        "api-ms-win-crt-process-l1-1-0",
+-        "api-ms-win-crt-runtime-l1-1-0",
+-        "api-ms-win-crt-stdio-l1-1-0",
+-        "api-ms-win-crt-string-l1-1-0",
+-        "api-ms-win-crt-time-l1-1-0",
+-        "api-ms-win-crt-utility-l1-1-0",
+-        "ucrtbase",
+-
+-        // Finally load VS 2017 DLLs in the following order
+-        "vcruntime140",
+-        "vcruntime140_1",
+-        "msvcp140"
+-};
+-
+     private static String lookupToolkitClass(String name) {
+         if ("prism".equalsIgnoreCase(name)) {
+             return QUANTUM_TOOLKIT;
+@@ -167,30 +117,9 @@
+         return name;
+     }
+ 
+-    public static synchronized void loadMSWindowsLibraries() {
+-        for (String libName : msLibNames) {
+-            try {
+-                NativeLibLoader.loadLibrary(libName);
+-            } catch (Throwable t) {
+-                if (verbose) {
+-                    System.err.println("Error: failed to load "
+-                            + libName + ".dll : " + t);
+-                }
+-            }
+-        }
+-    }
+-
+     private static String getDefaultToolkit() {
+-        if (PlatformUtil.isWindows()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isMac()) {
++        if (PlatformUtil.isLinux()) {
+             return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isLinux()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isIOS()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isAndroid()) {
+-           return DEFAULT_TOOLKIT;
+         }
+ 
+         throw new UnsupportedOperationException(System.getProperty("os.name") + " is not supported");
+@@ -208,11 +137,6 @@
+             return null;
+         });
+ 
+-        // Load required Microsoft runtime DLLs on Windows platforms
+-        if (PlatformUtil.isWindows()) {
+-            loadMSWindowsLibraries();
+-        }
+-
+         boolean userSpecifiedToolkit = true;
+ 
+         // Check a system property to see if there is a specific toolkit to use.
+diff -ur sdk/javafx.graphics/com/sun/javafx/util/Utils.java src/javafx.graphics/com/sun/javafx/util/Utils.java
+--- sdk/javafx.graphics/com/sun/javafx/util/Utils.java	2020-09-04 13:03:42.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2020-09-16 12:15:03.405241441 -0400
+@@ -974,18 +974,4 @@
+         return new String(dst, 0, dstIndex);
+     }
+ 
+-    public static synchronized void loadNativeSwingLibrary() {
+-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+-            String libName = "prism_common";
+-
+-            if (PrismSettings.verbose) {
+-                System.out.println("Loading Prism common native library ...");
+-            }
+-            NativeLibLoader.loadLibrary(libName);
+-            if (PrismSettings.verbose) {
+-                System.out.println("\tsucceeded.");
+-            }
+-            return null;
+-        });
+-    }
+ }
+diff -ur sdk/javafx.graphics/com/sun/prism/GraphicsPipeline.java src/javafx.graphics/com/sun/prism/GraphicsPipeline.java
+--- sdk/javafx.graphics/com/sun/prism/GraphicsPipeline.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/GraphicsPipeline.java	2020-09-16 12:15:05.168220929 -0400
+@@ -191,20 +191,9 @@
+                                             installedPipeline);
+         }
+         for (String prefix : PrismSettings.tryOrder) {
+-            // Warn if j2d pipeline is specified
+-            if ("j2d".equals(prefix)) {
+-                System.err.println(
+-                    "WARNING: The prism-j2d pipeline should not be used as the software");
+-                System.err.println(
+-                    "fallback pipeline. It is no longer tested nor intended to be used for");
+-                System.err.println(
+-                    "on-screen rendering. Please use the prism-sw pipeline instead by setting");
+-                System.err.println(
+-                    "the \"prism.order\" system property to \"sw\" rather than \"j2d\".");
+-            }
+ 
+             if (PrismSettings.verbose) {
+-                if ("j2d".equals(prefix) || "sw".equals(prefix)) {
++                if ("sw".equals(prefix)) {
+                     System.err.println("*** Fallback to Prism SW pipeline");
+                 }
+             }
+diff -ur sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java src/javafx.graphics/com/sun/prism/impl/PrismSettings.java
+--- sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2020-09-16 12:15:05.266219789 -0400
+@@ -87,8 +87,6 @@
+     public static final boolean forceNonAntialiasedShape;
+ 
+     public static enum RasterizerType {
+-        JavaPisces("Java-based Pisces Rasterizer"),
+-        NativePisces("Native-based Pisces Rasterizer"),
+         FloatMarlin("Float Precision Marlin Rasterizer"),
+         DoubleMarlin("Double Precision Marlin Rasterizer");
+ 
+@@ -209,15 +207,7 @@
+         if (order != null) {
+             tryOrderArr = split(order, ",");
+         } else {
+-            if (PlatformUtil.isWindows()) {
+-                tryOrderArr = new String[] { "d3d", "sw" };
+-            } else if (PlatformUtil.isMac()) {
+-                tryOrderArr = new String[] { "es2", "sw" };
+-            } else if (PlatformUtil.isIOS()) {
+-                tryOrderArr = new String[] { "es2" };
+-            } else if (PlatformUtil.isAndroid()) {
+-                    tryOrderArr = new String[] { "es2" };
+-            } else if (PlatformUtil.isLinux()) {
++            if (PlatformUtil.isLinux()) {
+                 tryOrderArr = new String[] { "es2", "sw" };
+             } else {
+                 tryOrderArr = new String[] { "sw" };
+@@ -231,17 +221,6 @@
+         if (rOrder != null) {
+             for (String s : split(rOrder.toLowerCase(), ",")) {
+                 switch (s) {
+-                    case "pisces":
+-                        rSpec = PlatformUtil.isEmbedded() || !PlatformUtil.isLinux()
+-                                ? RasterizerType.NativePisces
+-                                : RasterizerType.JavaPisces;
+-                        break;
+-                    case "nativepisces":
+-                        rSpec = RasterizerType.NativePisces;
+-                        break;
+-                    case "javapisces":
+-                        rSpec = RasterizerType.JavaPisces;
+-                        break;
+                     case "marlin":
+                     case "doublemarlin":
+                         rSpec = RasterizerType.DoubleMarlin;
+@@ -264,16 +243,7 @@
+                         ? RasterizerType.DoubleMarlin
+                         : RasterizerType.FloatMarlin;
+             } else {
+-                boolean doNativePisces;
+-                String npprop = systemProperties.getProperty("prism.nativepisces");
+-                if (npprop == null) {
+-                    doNativePisces = PlatformUtil.isEmbedded() || !PlatformUtil.isLinux();
+-                } else {
+-                    doNativePisces = Boolean.parseBoolean(npprop);
+-                }
+-                rSpec = doNativePisces
+-                        ? RasterizerType.NativePisces
+-                        : RasterizerType.JavaPisces;
++                rSpec = RasterizerType.DoubleMarlin; // SWContext() and ShapeUtil() default
+             }
+         }
+         rasterizerSpec = rSpec;
+diff -ur sdk/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java src/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java
+--- sdk/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java	2020-09-16 12:15:05.219220336 -0400
+@@ -39,12 +39,6 @@
+     private static final ShapeRasterizer shapeRasterizer;
+     static {
+         switch (PrismSettings.rasterizerSpec) {
+-            case JavaPisces:
+-                shapeRasterizer = new OpenPiscesRasterizer();
+-                break;
+-            case NativePisces:
+-                shapeRasterizer = new NativePiscesRasterizer();
+-                break;
+             case FloatMarlin:
+                 shapeRasterizer = new MarlinRasterizer();
+                 break;
+diff -ur sdk/javafx.graphics/com/sun/prism/sw/SWContext.java src/javafx.graphics/com/sun/prism/sw/SWContext.java
+--- sdk/javafx.graphics/com/sun/prism/sw/SWContext.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/sw/SWContext.java	2020-09-16 12:15:05.111221592 -0400
+@@ -66,90 +66,6 @@
+         void dispose();
+     }
+ 
+-    class NativeShapeRenderer implements ShapeRenderer {
+-        private SoftReference<SWMaskTexture> maskTextureRef;
+-
+-        public void renderShape(PiscesRenderer pr, Shape shape, BasicStroke stroke, BaseTransform tr, Rectangle clip, boolean antialiasedShape) {
+-            try {
+-                final MaskData mask = ShapeUtil.rasterizeShape(shape, stroke, clip.toRectBounds(), tr, true, antialiasedShape);
+-                final SWMaskTexture tex = this.validateMaskTexture(mask.getWidth(), mask.getHeight());
+-                mask.uploadToTexture(tex, 0, 0, false);
+-                pr.fillAlphaMask(tex.getDataNoClone(), mask.getOriginX(), mask.getOriginY(),
+-                                 mask.getWidth(), mask.getHeight(), 0, tex.getPhysicalWidth());
+-            } catch (Throwable ex) {
+-                if (PrismSettings.verbose) {
+-                    ex.printStackTrace();
+-                }
+-                Logging.getJavaFXLogger().warning("Cannot rasterize Shape: "
+-                        + ex.toString());
+-            }
+-        }
+-
+-        private SWMaskTexture initMaskTexture(int width, int height) {
+-            final SWMaskTexture tex = (SWMaskTexture)factory.createMaskTexture(width, height, Texture.WrapMode.CLAMP_NOT_NEEDED);
+-            maskTextureRef = new SoftReference<SWMaskTexture>(tex);
+-            return tex;
+-        }
+-
+-        private void disposeMaskTexture() {
+-            if (maskTextureRef != null){
+-                maskTextureRef.clear();
+-                maskTextureRef = null;
+-            }
+-        }
+-
+-        private SWMaskTexture validateMaskTexture(int width, int height) {
+-            SWMaskTexture tex;
+-            if (maskTextureRef == null) {
+-                tex = this.initMaskTexture(width, height);
+-            } else {
+-                tex = maskTextureRef.get();
+-                if (tex == null ||
+-                    tex.getPhysicalWidth() < width ||
+-                    tex.getPhysicalHeight() < height)
+-                {
+-                    this.disposeMaskTexture();
+-                    tex = this.initMaskTexture(width, height);
+-                }
+-            }
+-            return tex;
+-        }
+-
+-        public void dispose() {
+-            this.disposeMaskTexture();
+-        }
+-    }
+-
+-    static final class JavaShapeRenderer implements ShapeRenderer {
+-        private final DirectRTPiscesAlphaConsumer alphaConsumer = new DirectRTPiscesAlphaConsumer();
+-
+-        public void renderShape(PiscesRenderer pr, Shape shape, BasicStroke stroke, BaseTransform tr, Rectangle clip, boolean antialiasedShape) {
+-            if (stroke != null && stroke.getType() != BasicStroke.TYPE_CENTERED) {
+-                // RT-27427
+-                // TODO: Optimize the combinatorial strokes for simple
+-                // shapes and/or teach the rasterizer to be able to
+-                // do a "differential fill" between two shapes.
+-                // Note that most simple shapes will use a more optimized path
+-                // than this method for the INNER/OUTER strokes anyway.
+-                shape = stroke.createStrokedShape(shape);
+-                stroke = null;
+-            }
+-            try {
+-                final Renderer r = OpenPiscesPrismUtils.setupRenderer(shape, stroke, tr, clip, antialiasedShape);
+-                alphaConsumer.initConsumer(r, pr);
+-                r.produceAlphas(alphaConsumer);
+-            } catch (Throwable ex) {
+-                if (PrismSettings.verbose) {
+-                    ex.printStackTrace();
+-                }
+-                Logging.getJavaFXLogger().warning("Cannot rasterize Shape: "
+-                        + ex.toString());
+-            }
+-        }
+-
+-        public void dispose() { }
+-    }
+-
+     static final class MarlinShapeRenderer implements ShapeRenderer {
+         private final DirectRTMarlinAlphaConsumer alphaConsumer = new DirectRTMarlinAlphaConsumer();
+ 
+@@ -341,12 +257,6 @@
+     SWContext(ResourceFactory factory) {
+         this.factory = factory;
+         switch (PrismSettings.rasterizerSpec) {
+-            case JavaPisces:
+-                this.shapeRenderer = new JavaShapeRenderer();
+-                break;
+-            case NativePisces:
+-                this.shapeRenderer = new NativeShapeRenderer();
+-                break;
+             case FloatMarlin:
+                 this.shapeRenderer = new MarlinShapeRenderer();
+                 break;
+diff -ur sdk/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java src/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java
+--- sdk/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java	2020-09-16 12:15:04.941223570 -0400
+@@ -41,24 +41,10 @@
+ class RendererFactory {
+ 
+     private static String rootPkg = Renderer.rootPkg;
+-    private static boolean tryRSL = true;
+-    private static boolean trySIMD = false;
+-    // by default we only enable jogl hw acceleration on MacOS
+-    private static boolean tryJOGL = PlatformUtil.isMac();
+     private static boolean tryPrism = true;
+ 
+     static {
+         try {
+-            if ("false".equals(System.getProperty("decora.rsl"))) {
+-                tryRSL = false;
+-            }
+-            if ("false".equals(System.getProperty("decora.simd"))) {
+-                trySIMD = false;
+-            }
+-            String tryJOGLProp = System.getProperty("decora.jogl");
+-            if (tryJOGLProp != null) {
+-                tryJOGL = Boolean.parseBoolean(tryJOGLProp);
+-            }
+             if ("false".equals(System.getProperty("decora.prism"))) {
+                 tryPrism = false;
+             }
+@@ -66,51 +52,6 @@
+         }
+     }
+ 
+-    private static boolean isRSLFriendly(Class klass) {
+-        // can't use reflection here to check for sun.* class when running
+-        // in sandbox; however, we are allowed to walk up the tree and
+-        // check names of interfaces loaded by the system
+-        if (klass.getName().equals("sun.java2d.pipe.hw.AccelGraphicsConfig")) {
+-            return true;
+-        }
+-        boolean rsl = false;
+-        for (Class iface : klass.getInterfaces()) {
+-            if (isRSLFriendly(iface)) {
+-                rsl = true;
+-                break;
+-            }
+-        }
+-        return rsl;
+-    }
+-
+-    private static boolean isRSLAvailable(FilterContext fctx) {
+-        return isRSLFriendly(fctx.getReferent().getClass());
+-    }
+-
+-    private static Renderer createRSLRenderer(FilterContext fctx) {
+-        try {
+-            Class klass = Class.forName(rootPkg + ".impl.j2d.rsl.RSLRenderer");
+-            Method m = klass.getMethod("createRenderer",
+-                                       new Class[] { FilterContext.class });
+-            return (Renderer)m.invoke(null, new Object[] { fctx });
+-        } catch (Throwable e) {}
+-
+-        return null;
+-    }
+-
+-    private static Renderer createJOGLRenderer(FilterContext fctx) {
+-        if (tryJOGL) {
+-            try {
+-                Class klass = Class.forName(rootPkg + ".impl.j2d.jogl.JOGLRenderer");
+-                Method m = klass.getMethod("createRenderer",
+-                                           new Class[] { FilterContext.class });
+-                return (Renderer)m.invoke(null, new Object[] { fctx });
+-            } catch (Throwable e) {}
+-            // don't disable jogl if failed, it may be available for other config
+-        }
+-        return null;
+-    }
+-
+     private static Renderer createPrismRenderer(FilterContext fctx) {
+         if (tryPrism) {
+             try {
+@@ -126,22 +67,6 @@
+         return null;
+     }
+ 
+-    private static Renderer getSSERenderer() {
+-        if (trySIMD) {
+-            try {
+-                Class klass = Class.forName(rootPkg + ".impl.j2d.J2DSWRenderer");
+-                Method m = klass.getMethod("getSSEInstance", (Class[])null);
+-                Renderer sseRenderer = (Renderer)m.invoke(null, (Object[])null);
+-                if (sseRenderer != null) {
+-                    return sseRenderer;
+-                }
+-            } catch (Throwable e) {e.printStackTrace();}
+-            // don't bother trying to find SSE renderer again
+-            trySIMD = false;
+-        }
+-        return null;
+-    }
+-
+     private static Renderer getJavaRenderer() {
+         try {
+             Class klass = Class.forName(rootPkg + ".impl.prism.sw.PSWRenderer");
+@@ -172,11 +97,7 @@
+     }
+ 
+     static Renderer getSoftwareRenderer() {
+-        Renderer r = getSSERenderer();
+-        if (r == null) {
+-            r = getJavaRenderer();
+-        }
+-        return r;
++        return getJavaRenderer();
+     }
+ 
+     static Renderer createRenderer(final FilterContext fctx) {
+@@ -189,24 +110,6 @@
+             if (simpleName.equals("PrFilterContext") && tryPrism) {
+                 r = createPrismRenderer(fctx);
+             }
+-            // check to see whether one of the hardware accelerated
+-            // Java 2D pipelines is in use and exposes the necessary
+-            // "resource sharing layer" APIs (only in Sun's JDK 6u10 and above)
+-            if (r == null && tryRSL && isRSLAvailable(fctx)) {
+-                // try locating an RSLRenderer (need to use reflection in case
+-                // certain RSL backend classes are not available;
+-                // this step will trigger lazy downloading of impl jars
+-                // via JNLP, if not already available)
+-                r = createRSLRenderer(fctx);
+-            }
+-            if (r == null && tryJOGL) {
+-                // next try the JOGL renderer
+-                r = createJOGLRenderer(fctx);
+-            }
+-            if (r == null && trySIMD) {
+-                // next try the SSE renderer
+-                r = getSSERenderer();
+-            }
+             if (r == null) {
+                 // otherwise, fall back on the Java/CPU renderer
+                 r = getJavaRenderer(fctx);
+diff -ur sdk/javafx.graphics/module-info.java src/javafx.graphics/module-info.java
+--- sdk/javafx.graphics/module-info.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/module-info.java	2020-09-16 12:15:06.542204943 -0400
+@@ -34,8 +34,6 @@
+  * @since 9
+  */
+ module javafx.graphics {
+-    requires java.desktop;
+-    requires java.xml;
+     requires jdk.unsupported;
+ 
+     requires transitive javafx.base;
+@@ -69,25 +67,18 @@
+     exports com.sun.javafx.application to
+         java.base,
+         javafx.controls,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.css to
+         javafx.controls;
+-    exports com.sun.javafx.cursor to
+-        javafx.swing;
+-    exports com.sun.javafx.embed to
+-        javafx.swing;
+     exports com.sun.javafx.font to
+         javafx.web;
+     exports com.sun.javafx.geom to
+         javafx.controls,
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.geom.transform to
+         javafx.controls,
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.iio to
+         javafx.web;
+@@ -96,11 +87,9 @@
+     exports com.sun.javafx.scene to
+         javafx.controls,
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.scene.input to
+         javafx.controls,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.scene.layout to
+         javafx.controls,
+@@ -113,7 +102,6 @@
+         javafx.web;
+     exports com.sun.javafx.sg.prism to
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.stage to
+         javafx.controls,
+@@ -123,13 +111,10 @@
+     exports com.sun.javafx.tk to
+         javafx.controls,
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.javafx.util to
+         javafx.controls,
+-        javafx.fxml,
+         javafx.media,
+-        javafx.swing,
+         javafx.web;
+     exports com.sun.prism to
+         javafx.media,

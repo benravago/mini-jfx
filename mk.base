@@ -1,0 +1,21 @@
+#
+set -xe
+
+rm -fr bin
+mkdir -p bin
+
+patch -d src -p1 -i ../patch/javafx.base/diff
+
+tar -c -C patch/javafx.base com | tar -x -C src/javafx.base
+
+find src/javafx.base -name '*.java' > javafx.base
+
+/opt/jdk15/bin/javac \
+  --limit-modules jdk.jfr \
+  -d bin -p mod \
+  -sourcepath src/javafx.base \
+  @javafx.base
+
+rm -fr mod/javafx.base
+mv bin mod/javafx.base
+

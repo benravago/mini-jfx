@@ -1,0 +1,19 @@
+#
+set -xe
+
+rm -fr bin
+mkdir -p bin
+
+find src/javafx.controls -name '*.java' > javafx.controls
+
+/opt/jdk15/bin/javac \
+  --limit-modules javafx.base,javafx.graphics \
+  -d bin -p mod \
+  -sourcepath src/javafx.controls \
+  @javafx.controls
+
+unzip -q /opt/jfx15/lib/javafx.controls.jar $(cat patch/javafx.controls/copy) -d bin
+
+rm -fr mod/javafx.controls
+mv bin mod/javafx.controls
+
