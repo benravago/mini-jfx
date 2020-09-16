@@ -1,6 +1,6 @@
 diff -ur sdk/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java src/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java
 --- sdk/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java	2020-09-04 13:03:42.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java	2020-09-16 12:15:03.376241779 -0400
++++ src/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.java	2020-09-16 16:09:29.760736513 -0400
 @@ -25,7 +25,6 @@
  
  package com.sun.javafx.application;
@@ -34,7 +34,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/application/HostServicesDelegate.jav
                  // dump stack for debug purpose
 diff -ur sdk/javafx.graphics/com/sun/javafx/font/FallbackResource.java src/javafx.graphics/com/sun/javafx/font/FallbackResource.java
 --- sdk/javafx.graphics/com/sun/javafx/font/FallbackResource.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/font/FallbackResource.java	2020-09-16 12:15:04.490228818 -0400
++++ src/javafx.graphics/com/sun/javafx/font/FallbackResource.java	2020-09-16 16:09:30.855724426 -0400
 @@ -227,13 +227,8 @@
                  fallbacks = new FontResource[linkedFontFiles.size()];
              } else {
@@ -51,7 +51,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/font/FallbackResource.java src/javaf
                  fallbacks = new FontResource[linkedFontFiles.size()];
 diff -ur sdk/javafx.graphics/com/sun/javafx/font/LogicalFont.java src/javafx.graphics/com/sun/javafx/font/LogicalFont.java
 --- sdk/javafx.graphics/com/sun/javafx/font/LogicalFont.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/font/LogicalFont.java	2020-09-16 12:15:04.488228841 -0400
++++ src/javafx.graphics/com/sun/javafx/font/LogicalFont.java	2020-09-16 16:09:30.853724448 -0400
 @@ -180,8 +180,6 @@
                  FontConfigManager.getFontConfigFont(family, bold, italic);
              physicalFullName = fcCompFont.firstFont.fullName;
@@ -63,7 +63,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/font/LogicalFont.java src/javafx.gra
  
 diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java
 --- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2020-09-16 12:15:04.498228724 -0400
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2020-09-16 16:09:30.864724327 -0400
 @@ -49,12 +49,7 @@
  public abstract class PrismFontFactory implements FontFactory {
  
@@ -462,7 +462,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java src/javaf
      static native short getSystemLCID();
 diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java
 --- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2020-09-16 12:15:04.474229004 -0400
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2020-09-16 16:09:30.839724603 -0400
 @@ -1143,11 +1143,7 @@
      static short nameLocaleID = getSystemLCID();
  
@@ -477,7 +477,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java src/javafx.g
      private OpenTypeGlyphMapper mapper = null;
 diff -ur sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java
 --- sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2020-09-16 12:15:04.248231633 -0400
++++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2020-09-16 16:09:30.614727087 -0400
 @@ -30,7 +30,6 @@
  import com.sun.javafx.iio.bmp.BMPImageLoaderFactory;
  import com.sun.javafx.iio.common.ImageTools;
@@ -536,7 +536,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java src/javafx.gra
              }
 diff -ur sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java src/javafx.graphics/com/sun/javafx/tk/Toolkit.java
 --- sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2020-09-04 13:03:42.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2020-09-16 12:15:03.964234937 -0400
++++ src/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2020-09-16 16:09:30.331730210 -0400
 @@ -108,56 +108,6 @@
  
      private static final boolean verbose = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("javafx.verbose"));
@@ -640,7 +640,7 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java src/javafx.graphics/
          // Check a system property to see if there is a specific toolkit to use.
 diff -ur sdk/javafx.graphics/com/sun/javafx/util/Utils.java src/javafx.graphics/com/sun/javafx/util/Utils.java
 --- sdk/javafx.graphics/com/sun/javafx/util/Utils.java	2020-09-04 13:03:42.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2020-09-16 12:15:03.405241441 -0400
++++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2020-09-16 16:09:29.790736182 -0400
 @@ -974,18 +974,4 @@
          return new String(dst, 0, dstIndex);
      }
@@ -660,9 +660,31 @@ diff -ur sdk/javafx.graphics/com/sun/javafx/util/Utils.java src/javafx.graphics/
 -        });
 -    }
  }
+diff -ur sdk/javafx.graphics/com/sun/prism/es2/ES2Pipeline.java src/javafx.graphics/com/sun/prism/es2/ES2Pipeline.java
+--- sdk/javafx.graphics/com/sun/prism/es2/ES2Pipeline.java	2020-09-04 13:03:44.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/es2/ES2Pipeline.java	2020-09-16 16:09:31.353718929 -0400
+@@ -51,18 +51,6 @@
+         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+             String libName = "prism_es2";
+ 
+-            String eglType = PlatformUtil.getEmbeddedType();
+-            if ("eglfb".equals(eglType)) {
+-                isEglfb = true;
+-                libName = "prism_es2_eglfb";
+-            }
+-            else if ("monocle".equals(eglType)) {
+-                isEglfb = true;
+-                libName = "prism_es2_monocle";
+-            }
+-            else if ("eglx11".equals(eglType))
+-                libName = "prism_es2_eglx11";
+-
+             if (PrismSettings.verbose) {
+                 System.out.println("Loading ES2 native library ... " + libName);
+             }
 diff -ur sdk/javafx.graphics/com/sun/prism/GraphicsPipeline.java src/javafx.graphics/com/sun/prism/GraphicsPipeline.java
 --- sdk/javafx.graphics/com/sun/prism/GraphicsPipeline.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/prism/GraphicsPipeline.java	2020-09-16 12:15:05.168220929 -0400
++++ src/javafx.graphics/com/sun/prism/GraphicsPipeline.java	2020-09-16 16:09:31.504717262 -0400
 @@ -191,20 +191,9 @@
                                              installedPipeline);
          }
@@ -687,7 +709,7 @@ diff -ur sdk/javafx.graphics/com/sun/prism/GraphicsPipeline.java src/javafx.grap
              }
 diff -ur sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java src/javafx.graphics/com/sun/prism/impl/PrismSettings.java
 --- sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2020-09-16 12:15:05.266219789 -0400
++++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2020-09-16 16:09:31.602716181 -0400
 @@ -87,8 +87,6 @@
      public static final boolean forceNonAntialiasedShape;
  
@@ -752,7 +774,7 @@ diff -ur sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java src/javafx.gr
          rasterizerSpec = rSpec;
 diff -ur sdk/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java src/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java
 --- sdk/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java	2020-09-16 12:15:05.219220336 -0400
++++ src/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java	2020-09-16 16:09:31.556716689 -0400
 @@ -39,12 +39,6 @@
      private static final ShapeRasterizer shapeRasterizer;
      static {
@@ -768,7 +790,7 @@ diff -ur sdk/javafx.graphics/com/sun/prism/impl/shape/ShapeUtil.java src/javafx.
                  break;
 diff -ur sdk/javafx.graphics/com/sun/prism/sw/SWContext.java src/javafx.graphics/com/sun/prism/sw/SWContext.java
 --- sdk/javafx.graphics/com/sun/prism/sw/SWContext.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/prism/sw/SWContext.java	2020-09-16 12:15:05.111221592 -0400
++++ src/javafx.graphics/com/sun/prism/sw/SWContext.java	2020-09-16 16:09:31.445717914 -0400
 @@ -66,90 +66,6 @@
          void dispose();
      }
@@ -875,7 +897,7 @@ diff -ur sdk/javafx.graphics/com/sun/prism/sw/SWContext.java src/javafx.graphics
                  break;
 diff -ur sdk/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java src/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java
 --- sdk/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java	2020-09-16 12:15:04.941223570 -0400
++++ src/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java	2020-09-16 16:09:31.283719702 -0400
 @@ -41,24 +41,10 @@
  class RendererFactory {
  
@@ -1016,7 +1038,7 @@ diff -ur sdk/javafx.graphics/com/sun/scenario/effect/impl/RendererFactory.java s
                  r = getJavaRenderer(fctx);
 diff -ur sdk/javafx.graphics/module-info.java src/javafx.graphics/module-info.java
 --- sdk/javafx.graphics/module-info.java	2020-09-04 13:03:44.000000000 -0400
-+++ src/javafx.graphics/module-info.java	2020-09-16 12:15:06.542204943 -0400
++++ src/javafx.graphics/module-info.java	2020-09-16 16:09:32.843702482 -0400
 @@ -34,8 +34,6 @@
   * @since 9
   */
