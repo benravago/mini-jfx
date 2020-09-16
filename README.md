@@ -14,5 +14,5 @@ To build the runtime:
 1. check out the repository and install a [jdk](https://jdk.java.net/) and javafx [sdk](https://gluonhq.com/products/javafx/)
 2. edit the <code>mk*</code> scripts as needed; as they are, the scripts assume the jdk is at <code>/opt/jdk15</code> and the javafx sdk is at <code>/opt/jfx15</code>
 3. run <code>./mk</code> which in turn will call the other <code>./mk.*</code> scripts
-4. if there are no errors, run the <code>./mk.app</code> script which will compile and run a small app which should show a page that looks like
+4. if there are no errors, run the <code>./mk.app</code> script which will compile and run a small app which should show a page that looks something like
    this <p> ![HelloWorldFX](app/hello.png)
