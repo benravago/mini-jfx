@@ -2,7 +2,7 @@
 
 This is an experiment about making a minimal runtime for javafx.
 
-In this case, 'minimal' means being able to start a simple HelloWorld javafx application with just just the least javafx and jre modules.
+In this case, 'minimal' means being able to start a simple HelloWorld javafx application with the least javafx and jre modules.
 Basically, these are javafx.base, javafx.graphics, javafx.controls, and java.base (with a couple of other jdk modules).
 
 Some patches were needed to remove the java.desktop dependency in javafx.base.
