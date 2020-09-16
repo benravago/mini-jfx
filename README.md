@@ -5,10 +5,10 @@ This is an experiment about making a minimal runtime for javafx.
 In this case, 'minimal' means being able to start a simple HelloWorld javafx application with the least javafx and jre modules
 which turned out to be javafx.base, javafx.graphics, javafx.controls, and java.base (with a couple of other small jdk modules).
 
-Some patches were needed to remove the java.desktop dependency in javafx.base.
-These consist of copying four small clases from java/beans to com/sun/javafx/property/adapter.
+Some patches were needed to remove the java.desktop dependency in javafx.base to remove a java.desktop dependency
+(four small classes were copied from java/beans to com/sun/javafx/property/adapter).
 
-Some patches were also applied to javafx.graphics to remove non-Linux dependencies as well as printer support (which also relied on java.awt.print).
+Some patches were also applied to javafx.graphics to remove non-Linux dependencies as well as printer support (which relied on java.awt.print).
 
 To build the runtime:
 1. check out the repository and install a [jdk](https://jdk.java.net/) and javafx [sdk](https://gluonhq.com/products/javafx/)
