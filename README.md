@@ -12,7 +12,12 @@ Some patches were also applied to javafx.graphics to remove non-Linux dependenci
 
 To build the runtime:
 1. check out the repository and install a [jdk](https://jdk.java.net/) and javafx [sdk](https://gluonhq.com/products/javafx/)
-2. edit the <code>mk*</code> scripts as needed; as they are, the scripts assume the jdk is at <code>/opt/jdk15</code> and the javafx sdk is at <code>/opt/jfx15</code>
-3. run <code>./mk</code> which in turn will call the other <code>./mk.*</code> scripts
-4. if there are no errors, run the <code>./mk.app</code> script which will compile and run a small app which should show a page that looks something like
+2. edit the <code>Makefile</code> as needed; as it is, the jdk is assumed to be at <code>/opt/jdk17</code> and the javafx sdk at <code>/opt/jfx17</code>
+3. run <code>"make sdk"</code> to build the <code>./sdk</code> directory which contains a minimal javac environment as well as the basic jfx jars
+4. if there are no errors, run the <code>app/hello.sdk</code> script which will compile and run a small app which should show a page that looks something like
    this <p> ![HelloWorldFX](app/hello.png)
+5. run <code>"make rt"</code> to build the <code>./rt</code> directory which contains a minimal java runtime
+6. run the </code>app/hello.rt</code> script to run the previously built HelloFX class file again   
+   
+TODO:
+1. use jlink to fully integrate the jfx packages into the java runtime (no need for -p & --add-modules)
