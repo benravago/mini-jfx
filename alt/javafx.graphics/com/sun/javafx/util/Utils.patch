@@ -1,0 +1,22 @@
+--- sdk/javafx.graphics/com/sun/javafx/util/Utils.java	2021-10-16 18:21:20.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2021-12-27 19:00:17.254165819 -0500
+@@ -975,19 +975,4 @@
+         return new String(dst, 0, dstIndex);
+     }
+ 
+-    @SuppressWarnings("removal")
+-    public static synchronized void loadNativeSwingLibrary() {
+-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+-            String libName = "prism_common";
+-
+-            if (PrismSettings.verbose) {
+-                System.out.println("Loading Prism common native library ...");
+-            }
+-            NativeLibLoader.loadLibrary(libName);
+-            if (PrismSettings.verbose) {
+-                System.out.println("\tsucceeded.");
+-            }
+-            return null;
+-        });
+-    }
+ }

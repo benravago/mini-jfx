@@ -1,0 +1,11 @@
+--- sdk/javafx.base/com/sun/javafx/property/adapter/ReadOnlyPropertyDescriptor.java	2021-10-16 18:21:14.000000000 -0400
++++ src/javafx.base/com/sun/javafx/property/adapter/ReadOnlyPropertyDescriptor.java	2021-12-27 15:21:39.992854973 -0500
+@@ -28,8 +28,6 @@
+ import javafx.beans.WeakListener;
+ import javafx.beans.property.adapter.ReadOnlyJavaBeanProperty;
+ 
+-import java.beans.PropertyChangeEvent;
+-import java.beans.PropertyChangeListener;
+ import java.lang.ref.WeakReference;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;

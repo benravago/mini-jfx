@@ -1,0 +1,14 @@
+--- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2021-10-16 18:21:20.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFile.java	2021-12-27 17:32:50.194095501 -0500
+@@ -1145,11 +1145,7 @@
+     static short nameLocaleID = getSystemLCID();
+ 
+     private static short getSystemLCID() {
+-        if (PrismFontFactory.isWindows) {
+-            return PrismFontFactory.getSystemLCID();
+-        } else {
+             return getLCIDFromLocale(Locale.getDefault());
+-        }
+     }
+ 
+     private OpenTypeGlyphMapper mapper = null;

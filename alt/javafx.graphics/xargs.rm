@@ -1,15 +1,3 @@
-com/sun/glass/ui/android
-com/sun/glass/ui/ios
-com/sun/glass/ui/mac
-com/sun/glass/ui/monocle
-com/sun/glass/ui/win
-com/sun/javafx/font/coretext
-com/sun/javafx/font/directwrite
-com/sun/javafx/iio/ios
-com/sun/prism/d3d
-com/sun/prism/j2d
-com/sun/scenario/effect/impl/hw/d3d
-
 com/sun/javafx/font/AndroidFontFinder.java
 com/sun/javafx/font/MacFontFinder.java
 com/sun/javafx/font/WindowsFontMap.java
@@ -29,4 +17,3 @@ com/sun/prism/es2/WinGLContext.java
 com/sun/prism/es2/WinGLDrawable.java
 com/sun/prism/es2/WinGLFactory.java
 com/sun/prism/es2/WinGLPixelFormat.java
-com/sun/prism/sw/DirectRTPiscesAlphaConsumer.java

@@ -1,0 +1,42 @@
+--- sdk/javafx.graphics/com/sun/javafx/tk/PrintPipeline.java	2021-10-16 18:21:20.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/tk/PrintPipeline.java	2021-12-27 19:54:42.615872551 -0500
+@@ -25,12 +25,11 @@
+ 
+ package com.sun.javafx.tk;
+ 
+-import java.lang.reflect.Method;
+ import javafx.collections.ObservableSet;
+ import javafx.print.Printer;
+ import javafx.print.PrinterJob;
+ 
+-import javafx.print.Printer;
++import java.util.ServiceLoader;
+ import com.sun.javafx.print.PrinterJobImpl;
+ 
+ public abstract class PrintPipeline {
+@@ -41,15 +40,17 @@
+         if (ppl != null) {
+             return ppl;
+         }
+-        try {
+-            String className = "com.sun.prism.j2d.PrismPrintPipeline";
+-            Class klass = Class.forName(className);
+-            Method m = klass.getMethod("getInstance", (Class[])null);
+-            ppl = (PrintPipeline)m.invoke(null, (Object[])null);
+-            return ppl;
+-        } catch (Throwable t) {
+-            throw new RuntimeException(t);
++        var loader = ServiceLoader.load(PrintPipeline.class).iterator();
++        if (loader.hasNext()) {
++            ppl = loader.next();
++        } else {
++            ppl = new PrintPipeline() {
++                @Override public Printer getDefaultPrinter() { return null; }
++                @Override public ObservableSet<Printer> getAllPrinters() { return null; }
++                @Override public PrinterJobImpl createPrinterJob(PrinterJob job) { return null; }
++            };
+         }
++        return ppl;
+     }
+ 
+     public abstract Printer getDefaultPrinter();

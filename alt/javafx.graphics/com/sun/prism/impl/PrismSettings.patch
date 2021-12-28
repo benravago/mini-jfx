@@ -1,0 +1,19 @@
+--- sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2021-10-16 18:21:20.000000000 -0400
++++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2021-12-27 18:59:30.787696725 -0500
+@@ -207,15 +207,7 @@
+         if (order != null) {
+             tryOrderArr = split(order, ",");
+         } else {
+-            if (PlatformUtil.isWindows()) {
+-                tryOrderArr = new String[] { "d3d", "sw" };
+-            } else if (PlatformUtil.isMac()) {
+-                tryOrderArr = new String[] { "es2", "sw" };
+-            } else if (PlatformUtil.isIOS()) {
+-                tryOrderArr = new String[] { "es2" };
+-            } else if (PlatformUtil.isAndroid()) {
+-                    tryOrderArr = new String[] { "es2" };
+-            } else if (PlatformUtil.isLinux()) {
++            if (PlatformUtil.isLinux()) {
+                 tryOrderArr = new String[] { "es2", "sw" };
+             } else {
+                 tryOrderArr = new String[] { "sw" };

@@ -1,0 +1,103 @@
+--- sdk/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2021-10-16 18:21:20.000000000 -0400
++++ src/javafx.graphics/com/sun/javafx/tk/Toolkit.java	2021-12-27 17:32:50.199095444 -0500
+@@ -110,56 +110,6 @@
+     @SuppressWarnings("removal")
+     private static final boolean verbose = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("javafx.verbose"));
+ 
+-    private static final String[] msLibNames = {
+-        "api-ms-win-core-console-l1-1-0",
+-        "api-ms-win-core-console-l1-2-0",
+-        "api-ms-win-core-datetime-l1-1-0",
+-        "api-ms-win-core-debug-l1-1-0",
+-        "api-ms-win-core-errorhandling-l1-1-0",
+-        "api-ms-win-core-file-l1-1-0",
+-        "api-ms-win-core-file-l1-2-0",
+-        "api-ms-win-core-file-l2-1-0",
+-        "api-ms-win-core-handle-l1-1-0",
+-        "api-ms-win-core-heap-l1-1-0",
+-        "api-ms-win-core-interlocked-l1-1-0",
+-        "api-ms-win-core-libraryloader-l1-1-0",
+-        "api-ms-win-core-localization-l1-2-0",
+-        "api-ms-win-core-memory-l1-1-0",
+-        "api-ms-win-core-namedpipe-l1-1-0",
+-        "api-ms-win-core-processenvironment-l1-1-0",
+-        "api-ms-win-core-processthreads-l1-1-0",
+-        "api-ms-win-core-processthreads-l1-1-1",
+-        "api-ms-win-core-profile-l1-1-0",
+-        "api-ms-win-core-rtlsupport-l1-1-0",
+-        "api-ms-win-core-string-l1-1-0",
+-        "api-ms-win-core-synch-l1-1-0",
+-        "api-ms-win-core-synch-l1-2-0",
+-        "api-ms-win-core-sysinfo-l1-1-0",
+-        "api-ms-win-core-timezone-l1-1-0",
+-        "api-ms-win-core-util-l1-1-0",
+-        "api-ms-win-crt-conio-l1-1-0",
+-        "api-ms-win-crt-convert-l1-1-0",
+-        "api-ms-win-crt-environment-l1-1-0",
+-        "api-ms-win-crt-filesystem-l1-1-0",
+-        "api-ms-win-crt-heap-l1-1-0",
+-        "api-ms-win-crt-locale-l1-1-0",
+-        "api-ms-win-crt-math-l1-1-0",
+-        "api-ms-win-crt-multibyte-l1-1-0",
+-        "api-ms-win-crt-private-l1-1-0",
+-        "api-ms-win-crt-process-l1-1-0",
+-        "api-ms-win-crt-runtime-l1-1-0",
+-        "api-ms-win-crt-stdio-l1-1-0",
+-        "api-ms-win-crt-string-l1-1-0",
+-        "api-ms-win-crt-time-l1-1-0",
+-        "api-ms-win-crt-utility-l1-1-0",
+-        "ucrtbase",
+-
+-        // Finally load VS 2017 DLLs in the following order
+-        "vcruntime140",
+-        "vcruntime140_1",
+-        "msvcp140"
+-};
+-
+     private static String lookupToolkitClass(String name) {
+         if ("prism".equalsIgnoreCase(name)) {
+             return QUANTUM_TOOLKIT;
+@@ -169,30 +119,9 @@
+         return name;
+     }
+ 
+-    public static synchronized void loadMSWindowsLibraries() {
+-        for (String libName : msLibNames) {
+-            try {
+-                NativeLibLoader.loadLibrary(libName);
+-            } catch (Throwable t) {
+-                if (verbose) {
+-                    System.err.println("Error: failed to load "
+-                            + libName + ".dll : " + t);
+-                }
+-            }
+-        }
+-    }
+-
+     private static String getDefaultToolkit() {
+-        if (PlatformUtil.isWindows()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isMac()) {
++        if (PlatformUtil.isLinux()) {
+             return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isLinux()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isIOS()) {
+-            return DEFAULT_TOOLKIT;
+-        } else if (PlatformUtil.isAndroid()) {
+-           return DEFAULT_TOOLKIT;
+         }
+ 
+         throw new UnsupportedOperationException(System.getProperty("os.name") + " is not supported");
+@@ -211,11 +140,6 @@
+             return null;
+         });
+ 
+-        // Load required Microsoft runtime DLLs on Windows platforms
+-        if (PlatformUtil.isWindows()) {
+-            loadMSWindowsLibraries();
+-        }
+-
+         boolean userSpecifiedToolkit = true;
+ 
+         // Check a system property to see if there is a specific toolkit to use.

@@ -1,0 +1,12 @@
+--- sdk/javafx.base/com/sun/javafx/property/adapter/PropertyDescriptor.java	2021-10-16 18:21:14.000000000 -0400
++++ src/javafx.base/com/sun/javafx/property/adapter/PropertyDescriptor.java	2021-12-27 15:21:15.244136762 -0500
+@@ -31,9 +31,6 @@
+ import javafx.beans.value.ChangeListener;
+ import javafx.beans.value.ObservableValue;
+ 
+-import java.beans.PropertyChangeEvent;
+-import java.beans.PropertyVetoException;
+-import java.beans.VetoableChangeListener;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ 
