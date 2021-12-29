@@ -2,8 +2,5 @@
 set -x
 cd $(dirname $0)/..
 
-rt/bin/java \
-  -cp bin \
-  -p sdk/jfx --add-modules javafx.controls \
-  HelloFX
+rt/bin/java -cp bin HelloFX
 

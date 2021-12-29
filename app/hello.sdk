@@ -4,13 +4,6 @@ cd $(dirname $0)/..
 
 rm -fr bin
 
-sdk/bin/javac \
-  -d bin \
-  -p sdk/jfx --add-modules javafx.controls \
-  app/HelloFX.java
-
-sdk/bin/java \
-  -cp bin \
-  -p sdk/jfx --add-modules javafx.controls \
-  HelloFX
+sdk/bin/javac -d bin app/HelloFX.java
+sdk/bin/java -cp bin HelloFX
 

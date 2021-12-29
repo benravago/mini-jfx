@@ -1,7 +1,7 @@
 src/
 bin/
 lib/
-etc/
+mod/
 jdk/
 jre/
 sdk/
