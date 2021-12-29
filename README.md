@@ -5,8 +5,7 @@ This is an experiment about making a minimal runtime for javafx.
 In this case, 'minimal' means being able to start a simple HelloWorld javafx application with the least javafx and jre modules
 which turned out to be javafx.base, javafx.graphics, javafx.controls, and java.base (with a couple of other small jdk modules).
 
-Some patches were needed to remove the java.desktop dependency in javafx.base to remove a java.desktop dependency
-(four small classes were copied from java/beans to com/sun/javafx/property/adapter).
+Some patches were needed to remove the java.desktop dependency in javafx.base. Also, four small classes were copied from java.desktop:java.beans to com/sun/javafx/property/adapter.
 
 Some patches were also applied to javafx.graphics to remove non-Linux dependencies as well as printer support (which relied on java.awt.print).
 
@@ -20,4 +19,5 @@ To build the runtime:
 6. run the </code>app/hello.rt</code> script to run the previously built HelloFX class file again   
    
 TODO:
-1. use jlink to fully integrate the jfx packages into the java runtime (no need for -p & --add-modules)
+1. port [Harmony](https://harmony.apache.org) CUPS/IPP print backend to be a PrintPipeline implementation
+2. try to build [Processing4](https://github.com/processing/processing4) and dependencies [without java.awt](https://github.com/processing/processing4/wiki/Exorcising-AWT) 
