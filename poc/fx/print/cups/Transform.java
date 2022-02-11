@@ -1,5 +1,7 @@
 package fx.print.cups;
 
+import static fx.print.ipp.Tag.*;
+
 import javafx.print.Collation;
 import javafx.print.PageOrientation;
 import javafx.print.PageRange;
@@ -10,9 +12,7 @@ import javafx.print.PrintSides;
 import javafx.print.PrintQuality;
 // import javafx.print.PrintResolution;
 
-import static fx.print.ipp.Tag.*;
-
-final class Codec {
+final class Transform {
 
   static record Attribute(int tag, String name, Object value) {}
 
@@ -222,7 +222,7 @@ final class Codec {
   final static
   Attribute print_quality(PrintQuality k) {
     var v = switch(k) {
-      case DRAFT, LOW -> 3; // draft
+      case LOW, DRAFT -> 3; // draft
       case NORMAL     -> 4; // normal
       case HIGH       -> 5; // high
       default -> null;

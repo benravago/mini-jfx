@@ -125,13 +125,9 @@ class Decoder {
           value_offset = p;
           p += value_length;
         }
-        var name = name_length < 1 ? null : us_ascii_string(name_offset,name_length);
-        var value = value_length < 1 ? null : value_object(tag,value_offset,value_length);
+        var name = name_length > 0 ? us_ascii_string(name_offset,name_length) : null;
+        var value = value_length > 0 ? value_object(tag,value_offset,value_length) : null;
         onValue.accept(tag,name,value);
-
-        // TODO: how to handle additional value's, collection, etc.
-        //  if name_length == 0, then it's an additional value
-
       } else {
         throw new UnsupportedOperationException("bad tag 0x"+Integer.toHexString(tag));
       }

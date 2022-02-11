@@ -15,7 +15,7 @@ public interface Connection {
   @FunctionalInterface
   interface Result { void readFrom(InputStream in) throws IOException; }
 
-  static int post(String url, Source source, Result result) throws IOException {
+  static int post(String url, Source source, Result result, Result error) throws IOException {
     var http = connect(url);
     try {
       try (var os = http.getOutputStream()) {
@@ -28,7 +28,11 @@ public interface Connection {
             result.readFrom(is); // read response
           }
         }
-        default -> fault(http,code);
+        default -> {
+          try (var is = http.getErrorStream()) {
+            error.readFrom(is); // read fault
+          }
+        }
       }
       return code;
     }
@@ -48,15 +52,6 @@ public interface Connection {
     http.setRequestProperty("Content-Type", "application/ipp");
     // TODO: set other IPP headers
     return http;
-  }
-
-  static void fault(HttpURLConnection http, int code) throws IOException {
-    System.err.println("POST to "+http.getURL()+" rc="+code);
-    try (var is = http.getErrorStream()) {
-       if (is != null) {
-         is.transferTo(System.err);
-       }
-    }
   }
 
 }

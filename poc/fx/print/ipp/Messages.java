@@ -3,7 +3,7 @@ package fx.print.ipp;
 public class Messages {
 
   @SuppressWarnings("unchecked")
-  static Message parse(byte[] bytes) {
+  public static Message parse(byte[] bytes) {
     var dec = new Decoder();
     var groups = new Vector<Message.Group>();
     var entries = new Vector[1];
@@ -20,7 +20,7 @@ public class Messages {
     return new Message( dec.version, dec.code, dec.id, groups );
   }
 
-  static byte[] format(Message message) {
+  public static byte[] format(Message message) {
     var enc = new Encoder();
     enc.integer_(message.version());
     enc.integer_(message.code());
