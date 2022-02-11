@@ -4,9 +4,9 @@ import javafx.concurrent.Task;
 
 import java.io.IOException;
 
-import fx.print.ipp.Connection;
 import fx.print.ipp.Message;
 import fx.print.ipp.Messages;
+import fx.print.ipp.Connection;
 
 public abstract class Operation extends Task<Message> {
 
@@ -27,7 +27,7 @@ public abstract class Operation extends Task<Message> {
         recv -> buf = recv.readAllBytes(),
         fail -> buf = fail.readAllBytes()
       );
-      if (rc == 200 && buf != null) {
+      if (rc == 0 && buf != null) {
         return response(buf);
       } else {
         fault(buf,rc);

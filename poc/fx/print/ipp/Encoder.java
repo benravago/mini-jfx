@@ -1,9 +1,9 @@
 package fx.print.ipp;
 
-import static fx.print.ipp.Tag.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+
+import static fx.print.ipp.Tag.*;
 
 class Encoder extends ByteArrayOutputStream {
 

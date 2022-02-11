@@ -27,7 +27,7 @@ class DateTime {
       utc_direction = '-';
       offset = -offset;
     }
-    offset = offset / 60;
+    offset /= 60;
     var utc_hour = offset / 60;
     var utc_minutes = offset % 60;
 

@@ -19,27 +19,26 @@ public interface Connection {
     var http = connect(url);
     try {
       try (var os = http.getOutputStream()) {
-        source.writeTo(os); // send request 
+        source.writeTo(os); // send request
       }
       var code = http.getResponseCode(); // wait for response
       switch (code) {
         case HttpURLConnection.HTTP_OK -> {
+          code = 0; // not failed
           try (var is = http.getInputStream()) {
-            result.readFrom(is); // read response
+            result.readFrom(is); // receive response
           }
         }
         default -> {
           try (var is = http.getErrorStream()) {
-            error.readFrom(is); // read fault
+            error.readFrom(is); // receive fault
           }
         }
       }
       return code;
     }
     finally {
-      if (http != null) {
-        http.disconnect();
-      }
+      http.disconnect();
     }
   }
 

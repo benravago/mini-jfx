@@ -1,7 +1,5 @@
 package fx.print.cups;
 
-import static fx.print.ipp.Tag.*;
-
 import javafx.print.Collation;
 import javafx.print.PageOrientation;
 import javafx.print.PageRange;
@@ -12,9 +10,11 @@ import javafx.print.PrintSides;
 import javafx.print.PrintQuality;
 // import javafx.print.PrintResolution;
 
+import static fx.print.ipp.Tag.*;
+
 final class Transform {
 
-  static record Attribute(int tag, String name, Object value) {}
+  record Attribute(int tag, String name, Object value) {}
 
   final static
   Attribute encode(Object v) {

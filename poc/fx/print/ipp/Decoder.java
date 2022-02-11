@@ -1,10 +1,9 @@
 package fx.print.ipp;
 
 import java.util.function.IntConsumer;
+import java.io.UnsupportedEncodingException;
 
 import static fx.print.ipp.Tag.*;
-
-import java.io.UnsupportedEncodingException;
 
 class Decoder {
 
