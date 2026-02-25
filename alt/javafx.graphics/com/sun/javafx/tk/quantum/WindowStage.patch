@@ -1,0 +1,28 @@
+--- src/javafx.graphics/com/sun/javafx/tk/quantum/WindowStage.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/tk/quantum/WindowStage.java	2026-02-24 17:36:28
+@@ -39,7 +39,6 @@
+ import com.sun.glass.events.WindowEvent;
+ import com.sun.glass.ui.*;
+ import com.sun.glass.ui.Window.Level;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.iio.common.PushbroomScaler;
+ import com.sun.javafx.iio.common.ScalerFactory;
+ import com.sun.javafx.stage.HeaderButtonMetrics;
+@@ -466,16 +465,7 @@
+ 
+         int SMALL_ICON_HEIGHT = 32;
+         int SMALL_ICON_WIDTH = 32;
+-        if (PlatformUtil.isMac()) { //Mac Sized Icons
+-            SMALL_ICON_HEIGHT = 128;
+-            SMALL_ICON_WIDTH = 128;
+-        } else if (PlatformUtil.isWindows()) { //Windows Sized Icons
+-            SMALL_ICON_HEIGHT = 32;
+-            SMALL_ICON_WIDTH = 32;
+-        } else if (PlatformUtil.isLinux()) { //Linux icons
+-            SMALL_ICON_HEIGHT = 128;
+-            SMALL_ICON_WIDTH = 128;
+-        }
++        // TODO: PlatformUtil.is()...
+ 
+         if (icons == null || icons.size() < 1) { //no icons passed in
+             platformWindow.setIcon(null);

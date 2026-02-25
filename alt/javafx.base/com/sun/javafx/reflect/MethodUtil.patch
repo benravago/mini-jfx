@@ -1,0 +1,22 @@
+--- src/javafx.base/com/sun/javafx/reflect/MethodUtil.java	2026-01-27 06:40:44
++++ src/javafx.base/com/sun/javafx/reflect/MethodUtil.java	2026-02-24 10:13:58
+@@ -25,7 +25,6 @@
+ 
+ package com.sun.javafx.reflect;
+ 
+-import com.sun.javafx.SecurityUtil;
+ import java.security.AllPermission;
+ import java.security.PermissionCollection;
+ import java.security.SecureClassLoader;
+@@ -70,11 +69,6 @@
+  * Create a trampoline class.
+  */
+ public final class MethodUtil extends SecureClassLoader {
+-
+-    static {
+-        // Check for security manager (throws exception if enabled)
+-        SecurityUtil.checkSecurityManager();
+-    }
+ 
+     private static final String MISC_PKG = "com.sun.javafx.reflect.";
+     private static final String TRAMPOLINE = MISC_PKG + "Trampoline";

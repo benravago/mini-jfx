@@ -1,398 +1,112 @@
---- sdk/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2021-10-16 18:21:20.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2021-12-27 17:32:50.189095558 -0500
-@@ -49,12 +49,7 @@
+--- src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2026-02-24 11:44:31
+@@ -38,8 +38,6 @@
+ import java.util.Locale;
+ 
+ import com.sun.glass.ui.Screen;
+-import com.sun.glass.utils.NativeLibLoader;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.text.GlyphLayout;
+ 
  public abstract class PrismFontFactory implements FontFactory {
- 
-     public static final boolean debugFonts;
--    public static final boolean isWindows;
-     public static final boolean isLinux;
--    public static final boolean isMacOSX;
--    public static final boolean isIOS;
--    public static final boolean isAndroid;
--    public static final boolean isEmbedded;
-     public static final int cacheLayoutSize;
-     private static int subPixelMode;
-     public static final int SUB_PIXEL_ON = 1;
-@@ -68,8 +63,6 @@
-     private static final String jreDefaultFont   = "Lucida Sans Regular";
-     private static final String jreDefaultFontLC = "lucida sans regular";
-     private static final String jreDefaultFontFile = "LucidaSansRegular.ttf";
--    private static final String CT_FACTORY = "com.sun.javafx.font.coretext.CTFactory";
--    private static final String DW_FACTORY = "com.sun.javafx.font.directwrite.DWFactory";
-     private static final String FT_FACTORY = "com.sun.javafx.font.freetype.FTFactory";
- 
-     /* We need two maps. One to hold pointers to the raw fonts, another
-@@ -85,12 +78,7 @@
-         new HashMap<String, CompositeFontResource>();
+@@ -79,15 +77,15 @@
+     HashMap<String, CompositeFontResource> compResourceMap = new HashMap<>();
  
      static {
 -        isWindows = PlatformUtil.isWindows();
 -        isMacOSX  = PlatformUtil.isMac();
-         isLinux   = PlatformUtil.isLinux();
+-        isLinux   = PlatformUtil.isLinux();
 -        isIOS     = PlatformUtil.isIOS();
 -        isAndroid = PlatformUtil.isAndroid();
 -        isEmbedded = PlatformUtil.isEmbedded();
++        isWindows = false; // TODO: PlatformUtil.isWindows();
++        isMacOSX  = false; // TODO: PlatformUtil.isMac();
++        isLinux   = false; // TODO: PlatformUtil.isLinux();
++        isIOS     = false; // TODO: PlatformUtil.isIOS();
++        isAndroid = false; // TODO: PlatformUtil.isAndroid();
++        isEmbedded = false; // TODO: PlatformUtil.isEmbedded();
          int[] tempCacheLayoutSize = {0x10000};
  
-         @SuppressWarnings("removal")
-@@ -133,7 +121,7 @@
-                         }
-                     }
- 
--                    boolean lcdTextOff = isIOS || isAndroid || isEmbedded;
-+                    boolean lcdTextOff = false;
-                     String defLCDProp = lcdTextOff ? "false" : "true";
-                     String lcdProp = System.getProperty("prism.lcdtext", defLCDProp);
-                     lcdEnabled = lcdProp.equals("true");
-@@ -164,9 +152,7 @@
-     }
- 
-     private static String getNativeFactoryName() {
--        if (isWindows) return DW_FACTORY;
--        if (isMacOSX || isIOS) return CT_FACTORY;
--        if (isLinux || isAndroid) return FT_FACTORY;
-+        if (isLinux) return FT_FACTORY;
-         return null;
-     }
- 
-@@ -442,28 +428,6 @@
-             }
-         }
- 
--        /* We have hard coded some of the most commonly used Windows fonts
--         * so as to avoid the overhead of doing a lookup via GDI.
--         */
--        if (isWindows) {
--            int style = ((bold ? 1 : 0)) + ((italic) ? 2 : 0);
+-        NativeLibLoader.loadLibrary("javafx_font");
++        // TODO: NativeLibLoader.loadLibrary("javafx_font");
+         String dbg = System.getProperty("prism.debugfonts", "");
+         debugFonts = "true".equals(dbg);
+         jreFontDir = getJDKFontDir();
+@@ -488,7 +486,7 @@
+          */
+         if (isWindows) {
+             int style = ((bold ? 1 : 0)) + ((italic) ? 2 : 0);
 -            String fontFile = WindowsFontMap.findFontFile(lcFamilyName, style);
--            if (fontFile != null) {
--                fr = createFontResource(null, fontFile);
--                if (fr != null) {
--                    if (bold == fr.isBold() && italic == fr.isItalic() &&
--                        !styleStr.isEmpty())
--                    {
--                        storeInMap(lcFamilyName+styleStr, fr);
--                    }
--                    if (wantComp) {  // wrap with fallback support
--                        fr = new PrismCompositeFontResource(fr,
--                                                       lcFamilyName+styleStr);
--                    }
--                    return fr;
--                }
--            }
--        }
- 
-         getFullNameToFileMap();
-         ArrayList<String> family = familyToFontListMap.get(lcFamilyName);
-@@ -596,39 +560,7 @@
-         PrismFontFile fr = null;
-         /* Still need decode the dfont (event when coretext is used)
-          * so that JFXFontFont can read it */
--        if (isMacOSX) {
--            DFontDecoder decoder = null;
--            if (name != null) {
--                if (file.endsWith(".dfont")) {
--                    decoder = new DFontDecoder();
--                    try {
--                        decoder.openFile();
--                        decoder.decode(name);
--                        decoder.closeFile();
--                        file = decoder.getFile().getPath();
--                    } catch (Exception e) {
--                        file = null;
--                        decoder.deleteFile();
--                        decoder = null;
--                        if (PrismFontFactory.debugFonts) {
--                            e.printStackTrace();
--                        }
--                    }
--                }
--            }
--            if (file != null) {
--                fr = createFontResource(name, file);
--            }
--            if (decoder != null) {
--                if (fr != null) {
--                    addDecodedFont(fr);
--                } else {
--                    decoder.deleteFile();
--                }
--            }
--        } else {
-             fr = createFontResource(name, file);
--        }
-         return fr;
-     }
- 
-@@ -677,22 +609,6 @@
-             }
-         }
- 
--        /* We have hard coded some of the most commonly used Windows fonts
--         * so as to avoid the overhead of doing a lookup via GDI.
--         */
--        if (isWindows && name != null) {
--            String lcName = name.toLowerCase();
++            String fontFile = "?"; // TODO: WindowsFontMap.findFontFile(lcFamilyName, style);
+             if (fontFile != null) {
+                 fr = createFontResource(null, fontFile);
+                 if (fr != null) {
+@@ -726,7 +724,7 @@
+          */
+         if (isWindows && name != null) {
+             String lcName = name.toLowerCase();
 -            String fontFile = WindowsFontMap.findFontFile(lcName, -1);
--            if (fontFile != null) {
--                fr = createFontResource(null, fontFile);
--                if (fr != null) {
--                    if (wantComp) {
--                        fr = new PrismCompositeFontResource(fr, lcName);
--                    }
--                    return fr;
--                }
--            }
--        }
++            String fontFile = "?"; // TODO: WindowsFontMap.findFontFile(lcName, -1);
+             if (fontFile != null) {
+                 fr = createFontResource(null, fontFile);
+                 if (fr != null) {
+@@ -1652,10 +1650,7 @@
+                 }
  
-         getFullNameToFileMap(); // init maps
- 
-@@ -731,22 +647,9 @@
-         // avoid loading the full windows map. Ignore drive letter
-         // as its common to install on D: too in multi-boot.
-         String fileKey;
--        if (isWindows) {
--            if (fileName.toLowerCase().contains("\\windows\\fonts")) {
--                return true;
--            }
--            File f = new File(fileName);
--            fileKey = f.getName();
--        } else {
--            if (isMacOSX && fileName.toLowerCase().contains("/library/fonts")) {
--                // Most fonts are installed in either /System/Library/Fonts/
--                // or /Library/Fonts/
--                return true;
--            }
-             File f = new File(fileName);
-             // fileToFontMap key is the full path on non-windows
-             fileKey = f.getPath();
--        }
- 
-         getFullNameToFileMap();
-         return fileToFontMap.get(fileKey.toLowerCase()) != null;
-@@ -881,9 +784,6 @@
-         }
-         getFullNameToFileMap();
-         String filename = fontToFileMap.get(name);
--        if (isWindows) {
--            filename = getPathNameWindows(filename);
--        }
- 
-         // Caller needs to check for null and explicitly request
-         // the JRE default font, if that is what is needed.
-@@ -964,33 +864,6 @@
-         fontRegInfo[0] = new ArrayList<String>();
-         fontRegInfo[1] = new ArrayList<String>();
- 
--        if (isMacOSX) {
--            // Hotkey implementation of fallback font on Mac
--            fontRegInfo[0].add("/Library/Fonts/Arial Unicode.ttf");
--            fontRegInfo[1].add("Arial Unicode MS");
--
--            // Add Lucida Sans Regular to Mac OS X fallback list
--            fontRegInfo[0].add(jreFontDir + jreDefaultFontFile);
--            fontRegInfo[1].add(jreDefaultFont);
--
--            // Add Apple Symbols to Mac OS X fallback list
--            fontRegInfo[0].add("/System/Library/Fonts/Apple Symbols.ttf");
--            fontRegInfo[1].add("Apple Symbols");
--
--            // Add Apple Emoji Symbols to Mac OS X fallback list
--            fontRegInfo[0].add("/System/Library/Fonts/Apple Color Emoji.ttc");
--            fontRegInfo[1].add("Apple Color Emoji");
--
--            // Add CJK Ext B supplementary characters.
--            fontRegInfo[0].add("/System/Library/Fonts/STHeiti Light.ttf");
--            fontRegInfo[1].add("Heiti SC Light");
--
--            return fontRegInfo;
--        }
--        if (!isWindows) {
--            return fontRegInfo;
--        }
--
-         if (addSearchFont) {
-             fontRegInfo[0].add(null);
-             fontRegInfo[1].add(searchFont);
-@@ -1366,8 +1239,6 @@
-         String lcName = name.toLowerCase();
-         if (LogicalFont.isLogicalFont(lcName)) return true;
-         if (lcName.startsWith("lucida sans")) return true;
--        String systemFamily = getSystemFont(LogicalFont.SYSTEM).toLowerCase();
--        if (lcName.startsWith(systemFamily)) return true;
-         return false;
-     }
- 
-@@ -1378,19 +1249,7 @@
- 
-     public static float getLCDContrast() {
-         if (lcdContrast == -1) {
--            if (isWindows) {
--                lcdContrast = getLCDContrastWin32() / 1000f;
--            } else {
--                /* REMIND: When using CoreText it likely already applies gamma
--                 * correction to the glyph images. The current implementation does
--                 * not take this into account when rasterizing the glyph. Thus,
--                 * it is possible gamma correction is been applied twice to the
--                 * final result.
--                 * Consider using "1" for lcdContrast possibly produces visually
--                 * more appealing results (although not strictly correct).
--                 */
-                 lcdContrast = 1.3f;
--            }
-         }
-         return lcdContrast;
-     }
-@@ -1742,39 +1601,7 @@
-             familyToFontListMap = new HashMap<String,ArrayList<String>>(50);
-             fileToFontMap = new HashMap<String,String>(100);
- 
--            if (isWindows) {
--                getPlatformFontDirs();
--                populateFontFileNameMap(tmpFontToFileMap,
--                                        fontToFamilyNameMap,
--                                        familyToFontListMap,
--                                        Locale.ENGLISH);
--
--                if (debugFonts) {
--                    System.err.println("Windows Locale ID=" + getSystemLCID());
--                    logFontInfo(" *** WINDOWS FONTS BEFORE RESOLVING",
--                                tmpFontToFileMap,
--                                fontToFamilyNameMap,
--                                familyToFontListMap);
--                }
--
--                resolveWindowsFonts(tmpFontToFileMap,
--                                    fontToFamilyNameMap,
--                                    familyToFontListMap);
--
--                if (debugFonts) {
--                    logFontInfo(" *** WINDOWS FONTS AFTER RESOLVING",
--                                tmpFontToFileMap,
--                                fontToFamilyNameMap,
--                                familyToFontListMap);
--                }
--
--            } else if (isMacOSX || isIOS) {
+             } else if (isMacOSX || isIOS) {
 -                MacFontFinder.populateFontFileNameMap(tmpFontToFileMap,
 -                                                      fontToFamilyNameMap,
 -                                                      familyToFontListMap,
 -                                                      Locale.ENGLISH);
--
--            } else if (isLinux) {
-+            if (isLinux) {
-                 FontConfigManager.populateMaps(tmpFontToFileMap,
-                                                fontToFamilyNameMap,
-                                                familyToFontListMap,
-@@ -1785,11 +1612,6 @@
-                                 fontToFamilyNameMap,
++                // TODO: MacFontFinder.populateFontFileNameMap(...
+ 
+                 if (debugFonts) {
+                     logFontInfo(" *** MACOS LOCATED FONTS:",
+@@ -1675,10 +1670,7 @@
                                  familyToFontListMap);
                  }
--            } else if (isAndroid) {
+             } else if (isAndroid) {
 -               AndroidFontFinder.populateFontFileNameMap(tmpFontToFileMap,
 -                        fontToFamilyNameMap,
 -                        familyToFontListMap,
 -                        Locale.ENGLISH);
++                // TODO: AndroidFontFinder.populateFontFileNameMap(...
             } else { /* unrecognised OS */
                  fontToFileMap = tmpFontToFileMap;
                  return fontToFileMap;
-@@ -1804,19 +1626,8 @@
-             }
- 
+@@ -1695,7 +1687,7 @@
              fontToFileMap = tmpFontToFileMap;
--            if (isAndroid) {
--                populateFontFileNameMapGeneric(
+             if (isAndroid) {
+                 populateFontFileNameMapGeneric(
 -                       AndroidFontFinder.getSystemFontsDir());
--            }
++                       null ); // TODO: AndroidFontFinder.getSystemFontsDir()
+             }
              populateFontFileNameMapGeneric(jreFontDir);
  
--//             for (String keyName : fontToFileMap.keySet()) {
--//               System.out.println("font="+keyName+" file="+ fontToFileMap.get(keyName));
--//             }
--
--//             for (String keyName : familyToFontListMap.keySet()) {
--//               System.out.println("family="+keyName);
--//             }
-         }
-         return fontToFileMap;
-     }
-@@ -1933,79 +1744,15 @@
-         }
-     }
- 
--    static native int getLCDContrastWin32();
--    private static native float getSystemFontSizeNative();
--    private static native String getSystemFontNative();
-     private static float systemFontSize;
--    private static String systemFontFamily = null;
--    private static String monospaceFontFamily = null;
- 
-     public static float getSystemFontSize() {
-         if (systemFontSize == -1) {
--            if (isWindows) {
--                systemFontSize = getSystemFontSizeNative();
--            } else if (isMacOSX || isIOS) {
+@@ -1818,9 +1810,9 @@
+             if (isWindows) {
+                 systemFontSize = getSystemFontSizeNative();
+             } else if (isMacOSX || isIOS) {
 -                systemFontSize = MacFontFinder.getSystemFontSize();
--            } else if (isAndroid) {
++                systemFontSize = -1; // TODO: MacFontFinder.getSystemFontSize();
+             } else if (isAndroid) {
 -               systemFontSize = AndroidFontFinder.getSystemFontSize();
--            } else if (isEmbedded) {
--                try {
--                    int screenDPI = Screen.getMainScreen().getResolutionY();
--                    systemFontSize = ((float) screenDPI) / 6f; // 12 points
--                } catch (NullPointerException npe) {
--                    // if no screen is defined
--                    systemFontSize = 13f; // same as desktop Linux
--                }
--            } else {
-                 systemFontSize = 13f; // Gnome uses 13.
--            }
-         }
-         return systemFontSize;
-     }
- 
--    /* Applies to Windows and Mac. Not used on Linux */
--    public static String getSystemFont(String name) {
--        if (name.equals(LogicalFont.SYSTEM)) {
--            if (systemFontFamily == null) {
--                if (isWindows) {
--                    systemFontFamily = getSystemFontNative();
--                    if (systemFontFamily == null) {
--                        systemFontFamily = "Arial"; // play it safe.
--                    }
--                } else if (isMacOSX || isIOS) {
++               systemFontSize = -1; // TODO: AndroidFontFinder.getSystemFontSize();
+             } else if (isEmbedded) {
+                 try {
+                     int screenDPI = Screen.getMainScreen().getResolutionY();
+@@ -1846,12 +1838,12 @@
+                         systemFontFamily = "Arial"; // play it safe.
+                     }
+                 } else if (isMacOSX || isIOS) {
 -                    systemFontFamily = MacFontFinder.getSystemFont();
--                    if (systemFontFamily == null) {
--                        systemFontFamily = "Lucida Grande";
--                    }
--                } else if (isAndroid) {
++                    systemFontFamily = "?"; // TODO: MacFontFinder.getSystemFont();
+                     if (systemFontFamily == null) {
+                         systemFontFamily = "Lucida Grande";
+                     }
+                 } else if (isAndroid) {
 -                   systemFontFamily = AndroidFontFinder.getSystemFont();
--                } else {
--                    systemFontFamily = "Lucida Sans"; // for now.
--                }
--            }
--            return systemFontFamily;
--        } else if (name.equals(LogicalFont.SANS_SERIF)) {
--            return "Arial";
--        } else if (name.equals(LogicalFont.SERIF)) {
--            return "Times New Roman";
--        } else /* if (name.equals(LogicalFont.MONOSPACED)) */ {
--            if (monospaceFontFamily == null) {
--                if (isMacOSX) {
--                    /* This code is intentionally commented:
--                     * On the OS X the preferred monospaced font is Monaco,
--                     * although this can be a good choice for most Mac application
--                     * it is not suitable for JavaFX because Monaco does not
--                     * have neither bold nor italic.
--                     */
--//                    monospaceFontFamily = MacFontFinder.getMonospacedFont();
--                }
--            }
--            if (monospaceFontFamily == null) {
--                monospaceFontFamily = "Courier New";
--            }
--            return monospaceFontFamily;
--        }
--    }
- 
-     /* Called from PrismFontFile which caches the return value */
-     static native short getSystemLCID();
++                   systemFontFamily = "?"; // TODO: AndroidFontFinder.getSystemFont();
+                 } else {
+                     systemFontFamily = "Lucida Sans"; // for now.
+                 }

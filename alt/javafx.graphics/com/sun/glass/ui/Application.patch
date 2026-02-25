@@ -1,0 +1,11 @@
+--- src/javafx.graphics/com/sun/glass/ui/Application.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/glass/ui/Application.java	2026-02-24 11:00:41
+@@ -106,7 +106,7 @@
+         // load the native library of the specified libname.
+         // the platform default by convention is "glass", all others should have a suffix, ie glass-x11
+         if (!loaded) {
+-            com.sun.glass.utils.NativeLibLoader.loadLibrary(libname);
++            // TODO: com.sun.glass.utils.NativeLibLoader.loadLibrary(libname);
+             loaded = true;
+         }
+     }

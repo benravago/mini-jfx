@@ -1,0 +1,19 @@
+--- src/javafx.graphics/com/sun/javafx/scene/layout/HeaderButtonBehavior.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/scene/layout/HeaderButtonBehavior.java	2026-02-24 12:03:24
+@@ -25,7 +25,6 @@
+ 
+ package com.sun.javafx.scene.layout;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import javafx.beans.value.ObservableValue;
+ import javafx.css.PseudoClass;
+ import javafx.event.Event;
+@@ -112,7 +111,7 @@
+             case MAXIMIZE -> {
+                 // On macOS, a non-modal window is put into full-screen mode when the maximize button is clicked,
+                 // but enlarged to cover the desktop when the option key is pressed at the same time.
+-                if (PlatformUtil.isMac() && stage.getModality() == Modality.NONE && !event.isAltDown()) {
++                if (false && stage.getModality() == Modality.NONE && !event.isAltDown()) { // TODO: PlatformUtil.isMac()
+                     stage.setFullScreen(!stage.isFullScreen());
+                 } else {
+                     stage.setMaximized(!stage.isMaximized());

@@ -1,0 +1,33 @@
+--- src/javafx.controls/javafx/scene/control/skin/TextAreaSkin.java	2026-01-27 06:40:46
++++ src/javafx.controls/javafx/scene/control/skin/TextAreaSkin.java	2026-02-25 09:12:55
+@@ -25,8 +25,6 @@
+ 
+ package javafx.scene.control.skin;
+ 
+-import static com.sun.javafx.PlatformUtil.isMac;
+-import static com.sun.javafx.PlatformUtil.isWindows;
+ import java.util.List;
+ import javafx.animation.KeyFrame;
+ import javafx.animation.Timeline;
+@@ -516,10 +514,10 @@
+                         nextLine(select);
+                         break;
+                     case BEGINNING:
+-                        lineStart(select, select && isMac());
++                        lineStart(select, select && false); // TODO: isMac()
+                         break;
+                     case END:
+-                        lineEnd(select, select && isMac());
++                        lineEnd(select, select && false); // TODO: isMac()
+                         break;
+                     default:
+                         throw new IllegalArgumentException(""+dir);
+@@ -709,7 +707,7 @@
+         int pos = textArea.getCaretPosition();
+         int len = text.length();
+         boolean wentPastInitialNewline = false;
+-        boolean goPastTrailingNewline = isWindows();
++        boolean goPastTrailingNewline = false; // isWindows()
+ 
+         if (pos < len) {
+             if (goPastInitialNewline && text.codePointAt(pos) == 0x0a) {

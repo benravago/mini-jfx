@@ -1,0 +1,21 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/ButtonBehavior.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/ButtonBehavior.java	2026-02-25 08:37:55
+@@ -24,7 +24,6 @@
+  */
+ package com.sun.javafx.scene.control.behavior;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.scene.control.inputmap.KeyBinding;
+ 
+ import javafx.beans.InvalidationListener;
+@@ -87,8 +86,8 @@
+             new MouseMapping(MouseEvent.MOUSE_EXITED, this::mouseExited),
+ 
+             // on non-Mac OS platforms, we support pressing the ENTER key to activate the button
+-            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_PRESSED), this::keyPressed, event -> PlatformUtil.isMac()),
+-            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_RELEASED), this::keyReleased, event -> PlatformUtil.isMac())
++            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_PRESSED), this::keyPressed, event -> false), // TODO: PlatformUtil.isMac()
++            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_RELEASED), this::keyReleased, event -> false) // PlatformUtil.isMac()
+         );
+ 
+         // Button also cares about focus

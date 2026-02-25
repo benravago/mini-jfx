@@ -1,0 +1,28 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/DatePickerContent.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/DatePickerContent.java	2026-02-25 08:26:30
+@@ -68,7 +68,6 @@
+ import com.sun.javafx.scene.traversal.Direction;
+ import com.sun.javafx.scene.traversal.TraversalMethod;
+ 
+-import static com.sun.javafx.PlatformUtil.*;
+ import com.sun.javafx.scene.NodeHelper;
+ 
+ /**
+@@ -236,7 +235,7 @@
+ 
+ 
+                   case PAGE_UP:
+-                      if ((isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())) {
++                      if (false) { // TODO: (isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())
+                           if (!backYearButton.isDisabled()) {
+                               forward(-1, YEARS, true);
+                           }
+@@ -249,7 +248,7 @@
+                       break;
+ 
+                   case PAGE_DOWN:
+-                      if ((isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())) {
++                      if (false) { // TODO: (isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())
+                           if (!forwardYearButton.isDisabled()) {
+                               forward(1, YEARS, true);
+                           }

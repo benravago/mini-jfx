@@ -1,0 +1,48 @@
+--- src/javafx.graphics/com/sun/javafx/tk/quantum/GlassSystemMenu.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/tk/quantum/GlassSystemMenu.java	2026-02-24 17:40:56
+@@ -30,7 +30,6 @@
+ import com.sun.javafx.menu.MenuItemBase;
+ import com.sun.javafx.menu.RadioMenuItemBase;
+ import com.sun.javafx.menu.SeparatorMenuItemBase;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.tk.TKSystemMenu;
+ import com.sun.glass.events.KeyEvent;
+ import com.sun.glass.ui.Application;
+@@ -345,13 +344,13 @@
+         } else if (accelerator instanceof KeyCodeCombination) {
+             KeyCodeCombination kcc  = (KeyCodeCombination)accelerator;
+             KeyCode            code = kcc.getCode();
+-            assert PlatformUtil.isMac() || PlatformUtil.isLinux();
++            // TODO: assert PlatformUtil.isMac() || PlatformUtil.isLinux();
+             int modifier = glassModifiers(kcc);
+-            if (PlatformUtil.isMac()) {
++            if (false) { // TODO: PlatformUtil.isMac()
+                 int finalCode = code.isLetterKey() ? code.getChar().toUpperCase().charAt(0)
+                         : code.getCode();
+                 glassSubMenuItem.setShortcut(finalCode, modifier);
+-            } else if (PlatformUtil.isLinux()) {
++            } else if (false) { // TODO: PlatformUtil.isLinux()
+                 String lower = code.getChar().toLowerCase();
+                 if ((modifier & KeyEvent.MODIFIER_CONTROL) != 0) {
+                     glassSubMenuItem.setShortcut(lower.charAt(0), modifier);
+@@ -380,18 +379,10 @@
+             ret += KeyEvent.MODIFIER_ALT;
+         }
+         if (kcc.getShortcut() == KeyCombination.ModifierValue.DOWN) {
+-            if (PlatformUtil.isLinux()) {
+-                ret += KeyEvent.MODIFIER_CONTROL;
+-            } else if (PlatformUtil.isMac()) {
+-                ret += KeyEvent.MODIFIER_COMMAND;
+-            }
++            // TODO: PlatformUtil.is()...
+         }
+         if (kcc.getMeta() == KeyCombination.ModifierValue.DOWN) {
+-            if (PlatformUtil.isLinux()) {
+-                ret += KeyEvent.MODIFIER_WINDOWS;   // JDK-8127216 - Linux shortcut support
+-            } else if (PlatformUtil.isMac()) {
+-                ret += KeyEvent.MODIFIER_COMMAND;
+-            }
++            // TODO: PlatformUtil.is()...
+         }
+ 
+         if (kcc instanceof KeyCodeCombination) {

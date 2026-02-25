@@ -1,0 +1,58 @@
+--- src/javafx.graphics/com/sun/glass/ui/Platform.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/glass/ui/Platform.java	2026-02-24 11:18:59
+@@ -24,52 +24,17 @@
+  */
+ package com.sun.glass.ui;
+ 
+-import com.sun.javafx.PlatformUtil;
+-
+ final class Platform {
+ 
+-    public static final String MAC = "Mac";
+-    public static final String WINDOWS = "Win";
+-    public static final String GTK = "Gtk";
+-    public static final String IOS = "Ios";
+-    public static final String HEADLESS = "Headless";
++    // TODO: set type via ServiceLoader:Platform
++
+     public static final String UNKNOWN = "unknown";
+ 
+     static private String type = null;
+ 
+     static public synchronized String determinePlatform() {
+         if (type == null) {
+-
+-            // Provide for a runtime override, allowing EGL for example
+-            String userPlatform = System.getProperty("glass.platform");
+-
+-            if (userPlatform != null) {
+-                if (userPlatform.equals("macosx"))
+-                   type = MAC;
+-                else if (userPlatform.equals("windows"))
+-                   type = WINDOWS;
+-                else if (userPlatform.equals("linux"))
+-                   type = GTK;
+-                else if (userPlatform.equals("gtk"))
+-                   type = GTK;
+-                else if (userPlatform.equals("ios"))
+-                   type = IOS;
+-                else if (userPlatform.equals("headless"))
+-                   type = HEADLESS;
+-                else
+-                   type = userPlatform;
+-                return type;
+-            }
+-
+-            if (PlatformUtil.isMac()) {
+-                type = MAC;
+-            } else if (PlatformUtil.isWindows()) {
+-                type = WINDOWS;
+-            } else if (PlatformUtil.isLinux()) {
+-                type = GTK;
+-            } else if (PlatformUtil.isIOS()) {
+-                type = IOS;
+-            }
++            // TODO: PlatformUtil.is(...)
+         }
+ 
+         return type;

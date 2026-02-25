@@ -1,0 +1,19 @@
+--- src/javafx.graphics/com/sun/javafx/tk/quantum/PaintCollector.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/tk/quantum/PaintCollector.java	2026-02-24 17:38:39
+@@ -30,7 +30,6 @@
+ import java.util.Comparator;
+ import java.util.List;
+ import java.util.concurrent.CountDownLatch;
+-import com.sun.javafx.PlatformUtil;
+ 
+ import com.sun.glass.ui.Application;
+ import com.sun.glass.ui.Window;
+@@ -403,7 +402,7 @@
+                             needsHint = vs.isSynchronous();
+                         }
+                     }
+-                    if (!PlatformUtil.useEGL() || i == (n - 1)) {
++                    if (!false || i == (n - 1)) { // TODO: PlatformUtil.useEGL()
+                         // for platforms without a native window manager, we only want to do the
+                         // swap to the screen after the last window has been rendered
+                         vs.setDoPresent(true);

@@ -1,0 +1,45 @@
+--- src/javafx.graphics/com/sun/javafx/scene/KeyboardShortcutsHandler.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/scene/KeyboardShortcutsHandler.java	2026-02-24 12:01:27
+@@ -44,7 +44,6 @@
+ import javafx.scene.input.KeyEvent;
+ import javafx.scene.input.Mnemonic;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.collections.ObservableListWrapper;
+ import com.sun.javafx.collections.ObservableMapWrapper;
+ import com.sun.javafx.event.BasicEventDispatcher;
+@@ -190,7 +189,7 @@
+         final KeyEvent keyEvent = (KeyEvent)event;
+ 
+         if (keyPressedEvent || keyTypedEvent) {
+-            if (PlatformUtil.isMac()) {
++            if (false) { // TODO: PlatformUtil.isMac()
+                 if (keyEvent.isMetaDown()) {
+                     processMnemonics(keyEvent);
+                 }
+@@ -203,14 +202,14 @@
+         ** if we're not on mac, and nobody consumed the event, then we should
+         ** check to see if we should highlight the mnemonics on the scene
+         */
+-        if (!PlatformUtil.isMac() && !event.isConsumed()) {
++        if (!false && !event.isConsumed()) { // TODO: PlatformUtil.isMac()
+             if (keyPressedEvent) {
+                 if (keyEvent.isAltDown()) {
+                     // show mnemonic underline when alt is pressed
+                     if (!isMnemonicsDisplayEnabled()) {
+                         setMnemonicsDisplayEnabled(true);
+                     } else {
+-                        if (PlatformUtil.isWindows()) {
++                        if (false) { // TODO: PlatformUtil.isWindows()
+                             setMnemonicsDisplayEnabled(!isMnemonicsDisplayEnabled());
+                         }
+                     }
+@@ -219,7 +218,7 @@
+                     setMnemonicsDisplayEnabled(false);
+                 }
+             }
+-            if (keyReleasedEvent && !keyEvent.isAltDown() && !PlatformUtil.isWindows()) {
++            if (keyReleasedEvent && !keyEvent.isAltDown() && !false) { // TODO: PlatformUtil.isWindows()
+                 setMnemonicsDisplayEnabled(false);
+             }
+         }

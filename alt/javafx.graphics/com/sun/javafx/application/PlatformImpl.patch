@@ -1,0 +1,91 @@
+--- src/javafx.graphics/com/sun/javafx/application/PlatformImpl.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/application/PlatformImpl.java	2026-02-24 19:29:03
+@@ -25,9 +25,7 @@
+ 
+ package com.sun.javafx.application;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.PreviewFeature;
+-import com.sun.javafx.SecurityUtil;
+ import com.sun.javafx.application.preferences.PlatformPreferences;
+ import com.sun.javafx.application.preferences.PreferenceMapping;
+ import com.sun.javafx.css.StyleManager;
+@@ -62,9 +60,6 @@
+ public class PlatformImpl {
+ 
+     static {
+-        // Check for security manager (throws exception if enabled)
+-        SecurityUtil.checkSecurityManager();
+-
+         // Initialize the PreviewFeature class to ensure that the corresponding system property is read early.
+         Utils.forceInit(PreviewFeature.class);
+     }
+@@ -718,19 +713,7 @@
+             } else {
+                 if (platformTheme != null) {
+                     // The following names are Platform specific (Windows 7 and 8)
+-                    switch (WindowsHighContrastScheme.fromThemeName(platformTheme)) {
+-                        case HIGH_CONTRAST_WHITE:
+-                            accessibilityTheme = "com/sun/javafx/scene/control/skin/modena/blackOnWhite.css";
+-                            break;
+-                        case HIGH_CONTRAST_BLACK:
+-                            accessibilityTheme = "com/sun/javafx/scene/control/skin/modena/whiteOnBlack.css";
+-                            break;
+-                        case HIGH_CONTRAST_1:
+-                        case HIGH_CONTRAST_2: //TODO #2 should be green on black
+-                            accessibilityTheme = "com/sun/javafx/scene/control/skin/modena/yellowOnBlack.css";
+-                            break;
+-                        default:
+-                    }
++                    // TODO: WindowsHighContrastScheme.fromThemeName(platformTheme)
+                 }
+             }
+         }
+@@ -758,10 +741,10 @@
+                 if (com.sun.javafx.util.Utils.isQVGAScreen()) {
+                     uaStylesheets.add("com/sun/javafx/scene/control/skin/caspian/embedded-qvga.css");
+                 }
+-                if (PlatformUtil.isAndroid()) {
++                if (false) { // TODO: PlatformUtil.isAndroid()
+                     uaStylesheets.add("com/sun/javafx/scene/control/skin/caspian/android.css");
+                 }
+-                if (PlatformUtil.isIOS()) {
++                if (false) { // TODO: PlatformUtil.isIOS()
+                     uaStylesheets.add("com/sun/javafx/scene/control/skin/caspian/ios.css");
+                 }
+             }
+@@ -787,13 +770,13 @@
+                 uaStylesheets.add("com/sun/javafx/scene/control/skin/modena/touch.css");
+             }
+             // when running on embedded add a extra stylesheet to tune performance of modena theme
+-            if (PlatformUtil.isEmbedded()) {
++            if (false) { // TODO: PlatformUtil.isEmbedded()
+                 uaStylesheets.add("com/sun/javafx/scene/control/skin/modena/modena-embedded-performance.css");
+             }
+-            if (PlatformUtil.isAndroid()) {
++            if (false) { // TODO: PlatformUtil.isAndroid()
+                 uaStylesheets.add("com/sun/javafx/scene/control/skin/modena/android.css");
+             }
+-            if (PlatformUtil.isIOS()) {
++            if (false) { // TODO: PlatformUtil.isIOS()
+                 uaStylesheets.add("com/sun/javafx/scene/control/skin/modena/ios.css");
+             }
+ 
+@@ -849,7 +832,7 @@
+                 if (isMediaSupported == null) {
+                     isMediaSupported = checkForClass(
+                             "javafx.scene.media.MediaView");
+-                    if (isMediaSupported && PlatformUtil.isEmbedded()) {
++                    if (isMediaSupported && false) { // TODO: PlatformUtil.isEmbedded()
+                         String s = System.getProperty(
+                                 "com.sun.javafx.experimental.embedded.media",
+                                 "false");
+@@ -860,7 +843,7 @@
+             case WEB:
+                 if (isWebSupported == null) {
+                     isWebSupported = checkForClass("javafx.scene.web.WebView");
+-                    if (isWebSupported && PlatformUtil.isEmbedded()) {
++                    if (isWebSupported && false) { // TODO: PlatformUtil.isEmbedded()
+                         String s = System.getProperty(
+                                 "com.sun.javafx.experimental.embedded.web",
+                                 "false");

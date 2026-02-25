@@ -1,0 +1,31 @@
+--- src/javafx.graphics/com/sun/javafx/application/LauncherImpl.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/application/LauncherImpl.java	2026-02-24 17:52:27
+@@ -25,9 +25,7 @@
+ 
+ package com.sun.javafx.application;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.PreviewFeature;
+-import com.sun.javafx.SecurityUtil;
+ import com.sun.javafx.util.Utils;
+ import javafx.application.Application;
+ import javafx.application.Preloader;
+@@ -60,9 +58,6 @@
+ public class LauncherImpl {
+ 
+     static {
+-        // Check for security manager (throws exception if enabled)
+-        SecurityUtil.checkSecurityManager();
+-
+         // Initialize the PreviewFeature class to ensure that the corresponding system property is read early.
+         Utils.forceInit(PreviewFeature.class);
+     }
+@@ -390,7 +385,7 @@
+             } catch (ClassNotFoundException | NoClassDefFoundError cnfe) {}
+         }
+ 
+-        if (clz == null && PlatformUtil.isMac() && Normalizer.isNormalized(className, Normalizer.Form.NFD)) {
++        if (clz == null && false && Normalizer.isNormalized(className, Normalizer.Form.NFD)) { // TODO: PlatformUtil.isMac()
+             // macOS may have decomposed diacritical marks in mainClassName
+             // recompose them and try again
+             String cn = Normalizer.normalize(className, Normalizer.Form.NFC);

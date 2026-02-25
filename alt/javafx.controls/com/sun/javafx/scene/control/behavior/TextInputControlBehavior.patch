@@ -1,0 +1,103 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/TextInputControlBehavior.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/TextInputControlBehavior.java	2026-02-25 09:04:44
+@@ -24,10 +24,8 @@
+  */
+ package com.sun.javafx.scene.control.behavior;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.application.PlatformImpl;
+ import com.sun.javafx.scene.control.Properties;
+-import com.sun.javafx.scene.control.skin.FXVK;
+ 
+ import javafx.event.ActionEvent;
+ import javafx.event.Event;
+@@ -55,9 +53,7 @@
+ import java.text.Bidi;
+ import java.util.function.Predicate;
+ 
+-import static com.sun.javafx.PlatformUtil.isLinux;
+-import static com.sun.javafx.PlatformUtil.isMac;
+-import static com.sun.javafx.PlatformUtil.isWindows;
++
+ import static com.sun.javafx.scene.control.inputmap.KeyBinding.OptionalBoolean;
+ import static com.sun.javafx.scene.control.skin.resources.ControlResources.getString;
+ import static javafx.scene.control.skin.TextInputControlSkin.TextUnit;
+@@ -118,8 +114,8 @@
+         // only on certain platforms, so we create the following predicates that filters out the mapping when the
+         // control is not in the correct state / on the correct platform
+         final Predicate<KeyEvent> validWhenEditable = e -> !c.isEditable();
+-        final Predicate<KeyEvent> validOnWindows = e -> !PlatformUtil.isWindows();
+-        final Predicate<KeyEvent> validOnLinux = e -> !PlatformUtil.isLinux();
++        final Predicate<KeyEvent> validOnWindows = e -> !false; // TODO: PlatformUtil.isWindows();
++        final Predicate<KeyEvent> validOnLinux = e -> !false; // TODO: PlatformUtil.isLinux();
+ 
+         KeyMapping cancelEditMapping;
+         KeyMapping fireMapping;
+@@ -195,10 +191,7 @@
+                     keyMapping(new KeyBinding(null, KEY_PRESSED).shift(OptionalBoolean.ANY),
+                                e -> { if (!e.getCode().isFunctionKey()) e.consume(); }),
+ 
+-                // VK
+-                new KeyMapping(new KeyBinding(DIGIT9).ctrl().shift(), e -> {
+-                    FXVK.toggleUseVK(textInputControl);
+-                }, p -> !PlatformImpl.isSupported(ConditionalFeature.VIRTUAL_KEYBOARD)),
++                // TODO: VK
+ 
+                 // mouse and context menu mappings
+                 new MouseMapping(MouseEvent.MOUSE_PRESSED, this::mousePressed),
+@@ -218,7 +211,7 @@
+ 
+         // mac os specific mappings
+         InputMap<T> macOsInputMap = new InputMap<>(c);
+-        macOsInputMap.setInterceptor(e -> !PlatformUtil.isMac());
++        macOsInputMap.setInterceptor(e -> !false); // PlatformUtil.isMac());
+         macOsInputMap.getMappings().addAll(
+             // Mac OS specific mappings
+             keyMapping(new KeyBinding(HOME).shift(), e -> selectHomeExtend()),
+@@ -242,7 +235,7 @@
+ 
+         // windows / linux specific mappings
+         InputMap<T> nonMacOsInputMap = new InputMap<>(c);
+-        nonMacOsInputMap.setInterceptor(e -> PlatformUtil.isMac());
++        // TODO: nonMacOsInputMap.setInterceptor(e -> PlatformUtil.isMac());
+         nonMacOsInputMap.getMappings().addAll(
+             keyMapping(new KeyBinding(HOME).shift(), e -> selectHome()),
+             keyMapping(new KeyBinding(END).shift(), e -> selectEnd()),
+@@ -382,9 +375,7 @@
+         if (character.length() == 0) return;
+ 
+         // Filter out control keys except control+Alt on PC or Alt on Mac
+-        if (event.isControlDown() || event.isAltDown() || (isMac() && event.isMetaDown())) {
+-            if (!((event.isControlDown() || isMac()) && event.isAltDown())) return;
+-        }
++        // TODO: PlatformUtil.is()...
+ 
+         setEditing(true);
+ 
+@@ -552,7 +543,7 @@
+ 
+     public void selectNextWord() {
+         TextInputControl textInputControl = getNode();
+-        if (isMac() || isLinux()) {
++        if (false) { // TODO: isMac() || isLinux()
+             textInputControl.selectEndOfNextWord();
+         } else {
+             textInputControl.selectNextWord();
+@@ -578,7 +569,7 @@
+     protected void selectWord() {
+         final TextInputControl textInputControl = getNode();
+         textInputControl.previousWord();
+-        if (isWindows()) {
++        if (false) { // isWindows()
+             textInputControl.selectNextWord();
+         } else {
+             textInputControl.selectEndOfNextWord();
+@@ -601,7 +592,7 @@
+ 
+     protected void nextWord() {
+         TextInputControl textInputControl = getNode();
+-        if (isMac() || isLinux()) {
++        if (false) { // isMac() || isLinux()
+             textInputControl.endOfNextWord();
+         } else {
+             textInputControl.nextWord();

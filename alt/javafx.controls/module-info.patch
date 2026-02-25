@@ -1,0 +1,17 @@
+--- src/javafx.controls/module-info.java	2026-01-27 06:40:46
++++ src/javafx.controls/module-info.java	2026-02-24 20:28:38
+@@ -39,13 +39,6 @@
+     exports javafx.scene.control.cell;
+     exports javafx.scene.control.skin;
+ 
+-    exports com.sun.javafx.scene.control to
+-        javafx.web;
+-    exports com.sun.javafx.scene.control.behavior to
+-        javafx.web;
+-    exports com.sun.javafx.scene.control.inputmap to
+-        javafx.web;
+     exports com.sun.javafx.scene.control.skin to
+-        javafx.graphics,
+-        javafx.web;
++        javafx.graphics;
+ }

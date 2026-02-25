@@ -1,0 +1,19 @@
+--- src/javafx.graphics/com/sun/javafx/sg/prism/NGRegion.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/sg/prism/NGRegion.java	2026-02-24 17:30:36
+@@ -51,7 +51,6 @@
+ import java.util.WeakHashMap;
+ 
+ import com.sun.glass.ui.Screen;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.application.PlatformImpl;
+ import com.sun.javafx.geom.Path2D;
+ import com.sun.javafx.geom.RectBounds;
+@@ -1102,7 +1101,7 @@
+                 // This is a workaround for JDK-8087965 so we use path rasterizer for small radius's We are
+                 // keeping old rendering. We do not apply workaround when using Caspian or Embedded
+                 if (radii.isUniform() &&
+-                        !(!PlatformImpl.isCaspian() && !(PlatformUtil.isEmbedded() || PlatformUtil.isIOS()) && radii.getTopLeftHorizontalRadius() > 0 && radii.getTopLeftHorizontalRadius() <= 4)) {
++                        !(!PlatformImpl.isCaspian() && !(false) && radii.getTopLeftHorizontalRadius() > 0 && radii.getTopLeftHorizontalRadius() <= 4)) { // TODO: PlatformUtil.isEmbedded() || PlatformUtil.isIOS())
+                     // If the radii is uniform then we know every corner matches, so we can do some
+                     // faster rendering paths.
+                     float tlhr = (float) radii.getTopLeftHorizontalRadius();

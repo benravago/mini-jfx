@@ -1,0 +1,12 @@
+--- src/javafx.graphics/com/sun/glass/ui/View.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/glass/ui/View.java	2026-02-24 17:51:23
+@@ -53,8 +53,7 @@
+             String major = System.getProperty("os.version").replaceFirst("(\d+)\.\d+.*", "");
+             String minor = System.getProperty("os.version").replaceFirst("\d+\.(\d+).*", "");
+             int v = Integer.parseInt(major) * 100 + Integer.parseInt(minor);
+-            return (platform.equals(Platform.MAC) && v >= 1009) ||
+-                   (platform.equals(Platform.WINDOWS) && v >= 601);
++            return true; // TODO: platform == MAC or WINDOWS
+         } catch (Exception e) {
+             return false;
+         }

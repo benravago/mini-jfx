@@ -1,0 +1,19 @@
+--- src/javafx.graphics/com/sun/javafx/tk/quantum/GlassViewEventHandler.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/tk/quantum/GlassViewEventHandler.java	2026-02-24 17:39:13
+@@ -37,7 +37,6 @@
+ import com.sun.glass.ui.Screen;
+ import com.sun.glass.ui.View;
+ import com.sun.glass.ui.Window;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.collections.TrackableObservableList;
+ import com.sun.javafx.logging.PulseLogger;
+ import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+@@ -84,7 +83,7 @@
+         dndHandler = new GlassSceneDnDEventHandler(scene);
+ 
+         gestures = new GestureRecognizers();
+-        if (PlatformUtil.isWindows() || PlatformUtil.isIOS() || PlatformUtil.isEmbedded()) {
++        if (false) { // TODO: PlatformUtil.isWindows() || PlatformUtil.isIOS() || PlatformUtil.isEmbedded()
+             gestures.add(new SwipeGestureRecognizer(scene));
+         }
+         if (zoomGestureEnabled) {

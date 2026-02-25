@@ -1,0 +1,26 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/ListViewBehavior.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/ListViewBehavior.java	2026-02-25 08:41:53
+@@ -45,7 +45,6 @@
+ import javafx.scene.input.KeyEvent;
+ import javafx.scene.input.MouseEvent;
+ import javafx.util.Callback;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.scene.control.inputmap.InputMap;
+ import com.sun.javafx.scene.control.inputmap.InputMap.KeyMapping;
+ import com.sun.javafx.scene.control.inputmap.InputMap.MouseMapping;
+@@ -126,13 +125,13 @@
+         // create OS-specific child mappings
+         // --- mac OS
+         InputMap<ListView<T>> macInputMap = new InputMap<>(control);
+-        macInputMap.setInterceptor(event -> !PlatformUtil.isMac());
++        // TODO: macInputMap.setInterceptor(event -> !PlatformUtil.isMac());
+         addDefaultMapping(macInputMap, new KeyMapping(new KeyBinding(SPACE).shortcut().ctrl(), e -> toggleFocusOwnerSelection()));
+         addDefaultChildMap(listViewInputMap, macInputMap);
+ 
+         // --- all other platforms
+         InputMap<ListView<T>> otherOsInputMap = new InputMap<>(control);
+-        otherOsInputMap.setInterceptor(event -> PlatformUtil.isMac());
++        // TODO: otherOsInputMap.setInterceptor(event -> PlatformUtil.isMac());
+         addDefaultMapping(otherOsInputMap, new KeyMapping(new KeyBinding(SPACE).ctrl(), e -> toggleFocusOwnerSelection()));
+         addDefaultChildMap(listViewInputMap, otherOsInputMap);
+ 

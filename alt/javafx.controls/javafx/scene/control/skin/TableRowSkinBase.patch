@@ -1,0 +1,19 @@
+--- src/javafx.controls/javafx/scene/control/skin/TableRowSkinBase.java	2026-01-27 06:40:46
++++ src/javafx.controls/javafx/scene/control/skin/TableRowSkinBase.java	2026-02-25 09:11:56
+@@ -30,7 +30,6 @@
+ import java.lang.ref.WeakReference;
+ import java.util.*;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import javafx.animation.FadeTransition;
+ import javafx.beans.property.ObjectProperty;
+ import javafx.collections.ObservableList;
+@@ -79,7 +78,7 @@
+     private static boolean IS_STUB_TOOLKIT = Toolkit.getToolkit().toString().contains("StubToolkit");
+ 
+     // lets save the CPU and not do animations when on embedded platforms
+-    private static boolean DO_ANIMATIONS = ! IS_STUB_TOOLKIT && ! PlatformUtil.isEmbedded();
++    private static boolean DO_ANIMATIONS = ! IS_STUB_TOOLKIT && ! false; // TODO: PlatformUtil.isEmbedded();
+ 
+     private static final Duration FADE_DURATION = Duration.millis(200);
+ 

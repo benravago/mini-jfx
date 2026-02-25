@@ -1,63 +1,42 @@
---- sdk/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2021-10-16 18:21:20.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2021-12-27 18:54:45.583955474 -0500
-@@ -30,7 +30,6 @@
+--- src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2026-02-24 11:57:13
+@@ -25,12 +25,10 @@
+ 
+ package com.sun.javafx.iio;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.iio.ImageFormatDescription.Signature;
  import com.sun.javafx.iio.bmp.BMPImageLoaderFactory;
  import com.sun.javafx.iio.common.ImageTools;
  import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 -import com.sun.javafx.iio.ios.IosImageLoaderFactory;
  import com.sun.javafx.iio.jpeg.JPEGImageLoaderFactory;
  import com.sun.javafx.iio.png.PNGImageLoaderFactory;
- import com.sun.javafx.util.DataURI;
-@@ -119,18 +118,10 @@
-      */
-     private static final HashMap<Signature, ImageLoaderFactory> loaderFactoriesBySignature;
-     private static final ImageLoaderFactory[] loaderFactories;
+ import com.sun.javafx.logging.PlatformLogger;
+@@ -182,7 +180,7 @@
+     private Optional<ImageLoaderFactory> j2dImageLoaderFactory;
+     private int maxSignatureLength;
+ 
 -    private static final boolean isIOS = PlatformUtil.isIOS();
++    private static final boolean isIOS = false; // TODO: PlatformUtil.isIOS();
  
-     private static int maxSignatureLength;
- 
-     static {
--        if (isIOS) {
--            //On iOS we have single factory/ native loader
--            //for all image formats
--            loaderFactories = new ImageLoaderFactory[]{
--                IosImageLoaderFactory.getInstance()
--            };
--        } else {
+     private static class InstanceHolder {
+         static final ImageStorage INSTANCE = new ImageStorage();
+@@ -197,7 +195,7 @@
+             //On iOS we have single factory/ native loader
+             //for all image formats
              loaderFactories = new ImageLoaderFactory[]{
-                 GIFImageLoaderFactory.getInstance(),
-                 JPEGImageLoaderFactory.getInstance(),
-@@ -138,7 +129,6 @@
-                 BMPImageLoaderFactory.getInstance()
-                 // Note: append ImageLoadFactory for any new format here.
+-                IosImageLoaderFactory.getInstance()
++                // TODO: IosImageLoaderFactory.getInstance()
              };
--        }
+         } else {
+             loaderFactories = new ImageLoaderFactory[]{
+@@ -560,7 +558,7 @@
  
- //        loaderFactoriesByExtension = new HashMap(numExtensions);
-         loaderFactoriesBySignature = new HashMap<Signature, ImageLoaderFactory>(loaderFactories.length);
-@@ -261,13 +251,7 @@
-         ImageFrame[] images = null;
+     private ImageLoader findImageLoader(InputStream stream, ImageLoadListener listener) throws IOException {
+         if (isIOS) {
+-            return IosImageLoaderFactory.getInstance().createImageLoader(stream);
++            return null; // TODO: IosImageLoaderFactory.getInstance().createImageLoader(stream);
+         }
  
-         try {
--            if (isIOS) {
--                // no extension/signature recognition done here,
--                // we always want the iOS native loader
--                loader = IosImageLoaderFactory.getInstance().createImageLoader(input);
--            } else {
-                 loader = getLoaderBySignature(input, listener);
--            }
-             if (loader != null) {
-                 images = loadAll(loader, width, height, preserveAspectRatio, pixelScale, smooth);
-             } else {
-@@ -332,11 +316,7 @@
-                     }
-                 }
- 
--                if (isIOS) {
--                    loader = IosImageLoaderFactory.getInstance().createImageLoader(theStream);
--                } else {
-                     loader = getLoaderBySignature(theStream, listener);
--                }
-             } catch (Exception e) {
-                 throw new ImageStorageException(e.getMessage(), e);
-             }
+         // We need a stream that supports the mark and reset methods, since J2DImageLoader

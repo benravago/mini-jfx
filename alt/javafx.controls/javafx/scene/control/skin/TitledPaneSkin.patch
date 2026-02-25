@@ -1,0 +1,19 @@
+--- src/javafx.controls/javafx/scene/control/skin/TitledPaneSkin.java	2026-01-27 06:40:46
++++ src/javafx.controls/javafx/scene/control/skin/TitledPaneSkin.java	2026-02-25 09:16:04
+@@ -48,7 +48,6 @@
+ import javafx.scene.layout.StackPane;
+ import javafx.scene.shape.Rectangle;
+ import javafx.util.Duration;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.scene.control.behavior.TitledPaneBehavior;
+ 
+ /**
+@@ -70,7 +69,7 @@
+     // caching results in poorer looking text (it is blurry), so we don't do it
+     // unless on a low powered device (admittedly the test below isn't a great
+     // indicator of power, but it'll do for now).
+-    private static final boolean CACHE_ANIMATION = PlatformUtil.isEmbedded();
++    private static final boolean CACHE_ANIMATION = false; // TODO: PlatformUtil.isEmbedded();
+ 
+ 
+ 

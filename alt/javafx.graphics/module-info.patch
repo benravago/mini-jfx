@@ -1,71 +1,122 @@
---- sdk/javafx.graphics/module-info.java	2021-10-16 18:21:20.000000000 -0400
-+++ src/javafx.graphics/module-info.java	2021-12-27 17:32:50.220095204 -0500
-@@ -40,8 +40,6 @@
+--- src/javafx.graphics/module-info.java	2026-01-27 06:40:48
++++ src/javafx.graphics/module-info.java	2026-02-24 10:15:48
+@@ -40,8 +40,7 @@
   * @since 9
   */
  module javafx.graphics {
 -    requires java.desktop;
 -    requires java.xml;
-     requires jdk.unsupported;
++    requires jfx.desktop;
  
      requires transitive javafx.base;
-@@ -75,25 +73,18 @@
+ 
+@@ -65,98 +64,40 @@
+     exports javafx.scene.transform;
+     exports javafx.stage;
+ 
+-    exports com.sun.glass.ui to
+-        javafx.media,
+-        javafx.swing,
+-        javafx.web;
+-    exports com.sun.glass.utils to
+-        javafx.media,
+-        javafx.web;
      exports com.sun.javafx.application to
          java.base,
-         javafx.controls,
+-        javafx.controls,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        javafx.controls;
      exports com.sun.javafx.css to
          javafx.controls;
 -    exports com.sun.javafx.cursor to
 -        javafx.swing;
 -    exports com.sun.javafx.embed to
 -        javafx.swing;
-     exports com.sun.javafx.font to
-         javafx.web;
+-    exports com.sun.javafx.font to
+-        javafx.web;
      exports com.sun.javafx.geom to
-         javafx.controls,
-         javafx.media,
+-        javafx.controls,
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        javafx.controls;
      exports com.sun.javafx.geom.transform to
-         javafx.controls,
-         javafx.media,
+-        javafx.controls,
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
-     exports com.sun.javafx.iio to
-         javafx.web;
-@@ -102,11 +93,9 @@
+-        javafx.web;
+-    exports com.sun.javafx.iio to
+-        javafx.web;
++        javafx.controls;
+     exports com.sun.javafx.menu to
+         javafx.controls;
      exports com.sun.javafx.scene to
          javafx.controls,
-         javafx.media,
+         jfx.incubator.input,
+-        jfx.incubator.richtext,
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        jfx.incubator.richtext;
      exports com.sun.javafx.scene.input to
-         javafx.controls,
+-        javafx.controls,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        javafx.controls;
      exports com.sun.javafx.scene.layout to
+-        javafx.controls,
+-        javafx.web;
++        javafx.controls;
+     exports com.sun.javafx.scene.text to
          javafx.controls,
-@@ -119,7 +108,6 @@
-         javafx.web;
-     exports com.sun.javafx.sg.prism to
-         javafx.media,
+-        jfx.incubator.richtext,
+-        javafx.web;
++        jfx.incubator.richtext;
+     exports com.sun.javafx.scene.shape to
+         javafx.controls;
+     exports com.sun.javafx.scene.traversal to
+         javafx.controls,
+         jfx.incubator.input,
+-        jfx.incubator.richtext,
+-        javafx.web;
+-    exports com.sun.javafx.sg.prism to
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        jfx.incubator.richtext;
      exports com.sun.javafx.stage to
-         javafx.controls,
-@@ -129,13 +117,10 @@
+-        javafx.controls,
+-        javafx.swing;
+-    exports com.sun.javafx.text to
+-        javafx.web;
++        javafx.controls;
      exports com.sun.javafx.tk to
-         javafx.controls,
-         javafx.media,
+-        javafx.controls,
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
+-        javafx.web;
++        javafx.controls;
      exports com.sun.javafx.util to
          javafx.controls,
 -        javafx.fxml,
-         javafx.media,
+         jfx.incubator.input,
+-        jfx.incubator.richtext,
+-        javafx.media,
 -        javafx.swing,
-         javafx.web;
-     exports com.sun.prism to
-         javafx.media,
+-        javafx.web;
+-    exports com.sun.prism to
+-        javafx.media,
+-        javafx.web;
+-    exports com.sun.prism.image to
+-        javafx.web;
+-    exports com.sun.prism.paint to
+-        javafx.web;
+-    exports com.sun.scenario.effect to
+-        javafx.web;
+-    exports com.sun.scenario.effect.impl to
+-        javafx.web;
+-    exports com.sun.scenario.effect.impl.prism to
+-        javafx.web;
++        jfx.incubator.richtext;
+ }

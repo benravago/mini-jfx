@@ -1,19 +1,52 @@
---- sdk/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2021-10-16 18:21:20.000000000 -0400
-+++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2021-12-27 18:59:30.787696725 -0500
-@@ -207,15 +207,7 @@
-         if (order != null) {
-             tryOrderArr = split(order, ",");
-         } else {
--            if (PlatformUtil.isWindows()) {
--                tryOrderArr = new String[] { "d3d", "sw" };
--            } else if (PlatformUtil.isMac()) {
--                tryOrderArr = new String[] { "es2", "sw" };
--            } else if (PlatformUtil.isIOS()) {
+--- src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/prism/impl/PrismSettings.java	2026-02-24 12:07:40
+@@ -28,7 +28,6 @@
+ import java.util.List;
+ import java.util.Properties;
+ import java.util.StringTokenizer;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.util.Utils;
+ 
+ /**
+@@ -202,20 +201,9 @@
+         forceGPU = getBoolean(systemProperties, "prism.forceGPU", false);
+ 
+         String[] tryOrderArr;
+-        if (PlatformUtil.isWindows()) {
+-            tryOrderArr = new String[] { "d3d", "sw" };
+-        } else if (PlatformUtil.isMac()) {
+-            tryOrderArr = new String[] { "es2", "mtl", "sw" };
+-        } else if (PlatformUtil.isIOS()) {
+-            tryOrderArr = new String[] { "es2" };
+-        } else if (PlatformUtil.isAndroid()) {
 -                tryOrderArr = new String[] { "es2" };
--            } else if (PlatformUtil.isAndroid()) {
--                    tryOrderArr = new String[] { "es2" };
--            } else if (PlatformUtil.isLinux()) {
-+            if (PlatformUtil.isLinux()) {
-                 tryOrderArr = new String[] { "es2", "sw" };
-             } else {
-                 tryOrderArr = new String[] { "sw" };
+-        } else if (PlatformUtil.isLinux()) {
+-            tryOrderArr = new String[] { "es2", "sw" };
+-        } else {
+-            tryOrderArr = new String[] { "sw" };
+-        }
+-
++        // TODO: set tryOrder[] via ServiceLoader:Prism
++        tryOrderArr = new String[] {};
++        
+         defaultPipeline = tryOrderArr[0];
+ 
+         String order = systemProperties.getProperty("prism.order");
+@@ -247,7 +235,7 @@
+ 
+         String primtex = systemProperties.getProperty("prism.primtextures");
+         if (primtex == null) {
+-            primTextureSize = PlatformUtil.isEmbedded() ? -1 : 0;
++            primTextureSize = -1; // TODO: PlatformUtil.isEmbedded() ? -1 : 0;
+         } else if (primtex.equals("true")) {
+             primTextureSize = -1;
+         } else if (primtex.equals("false")) {
+@@ -320,7 +308,7 @@
+          * when rendering into small RTT.
+          */
+        minRTTSize = getInt(systemProperties, "prism.minrttsize",
+-               PlatformUtil.isEmbedded() ? 16 : 0, "Try -Dprism.minrttsize=<number>");
++               -1, "Try -Dprism.minrttsize=<number>"); // TODO: PlatformUtil.isEmbedded() ? 16 : 0
+ 
+         disableRegionCaching = getBoolean(systemProperties,
+                                           "prism.disableRegionCaching",

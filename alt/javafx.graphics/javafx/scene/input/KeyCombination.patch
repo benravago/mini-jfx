@@ -1,0 +1,11 @@
+--- src/javafx.graphics/javafx/scene/input/KeyCombination.java	2026-01-27 06:40:48
++++ src/javafx.graphics/javafx/scene/input/KeyCombination.java	2026-02-24 17:28:11
+@@ -284,7 +284,7 @@
+      */
+     public String getDisplayText() {
+         StringBuilder stringBuilder = new StringBuilder();
+-        if (com.sun.javafx.PlatformUtil.isMac()) {
++        if (false) { // TODO: com.sun.javafx.PlatformUtil.isMac()
+             // Macs have a different convention for keyboard accelerators -
+             // no pluses to separate modifiers, and special symbols for
+             // each modifier (in a particular order), etc

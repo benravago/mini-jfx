@@ -1,0 +1,55 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/TextAreaBehavior.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/TextAreaBehavior.java	2026-02-25 08:55:16
+@@ -25,7 +25,6 @@
+ 
+ package com.sun.javafx.scene.control.behavior;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.scene.control.Properties;
+ import javafx.scene.control.skin.TextAreaSkin;
+ import javafx.beans.value.ChangeListener;
+@@ -46,8 +45,6 @@
+ 
+ import java.util.function.Predicate;
+ 
+-import static com.sun.javafx.PlatformUtil.isMac;
+-import static com.sun.javafx.PlatformUtil.isWindows;
+ import static javafx.scene.control.skin.TextInputControlSkin.TextUnit;
+ import static javafx.scene.control.skin.TextInputControlSkin.Direction;
+ import static javafx.scene.input.KeyCode.*;
+@@ -103,7 +100,7 @@
+ 
+         // mac os specific mappings
+         InputMap<TextArea> macOsInputMap = new InputMap<>(c);
+-        macOsInputMap.setInterceptor(e -> !PlatformUtil.isMac());
++        // TODO: macOsInputMap.setInterceptor(e -> !PlatformUtil.isMac());
+         macOsInputMap.getMappings().addAll(
+             // Mac OS specific mappings
+             keyMapping(new KeyBinding(LEFT).shortcut(),  e -> lineStart(false)),
+@@ -125,7 +122,7 @@
+ 
+         // windows / linux specific mappings
+         InputMap<TextArea> nonMacOsInputMap = new InputMap<>(c);
+-        nonMacOsInputMap.setInterceptor(e -> PlatformUtil.isMac());
++        // TODO: nonMacOsInputMap.setInterceptor(e -> PlatformUtil.isMac());
+         nonMacOsInputMap.getMappings().addAll(
+             keyMapping(new KeyBinding(UP).ctrl(),           e -> skin.moveCaret(TextUnit.PARAGRAPH, Direction.UP,   false)),
+             keyMapping(new KeyBinding(DOWN).ctrl(),         e -> skin.moveCaret(TextUnit.PARAGRAPH, Direction.DOWN, false)),
+@@ -290,7 +287,7 @@
+                     // selection, and set the mark to be the other side and
+                     // the dot to be the new position.
+                     // everywhere else we just move the dot.
+-                    if (isMac()) {
++                    if (false) { // TODO: isMac()
+                         textArea.extendSelection(i);
+                     } else {
+                         skin.positionCaret(hit, true);
+@@ -403,7 +400,7 @@
+     protected void mouseDoubleClick(HitInfo hit) {
+         final TextArea textArea = getNode();
+         textArea.previousWord();
+-        if (isWindows()) {
++        if (false) { // TODO: isWindows()
+             textArea.selectNextWord();
+         } else {
+             textArea.selectEndOfNextWord();

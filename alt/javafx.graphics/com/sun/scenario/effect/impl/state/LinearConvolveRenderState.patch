@@ -1,0 +1,19 @@
+--- src/javafx.graphics/com/sun/scenario/effect/impl/state/LinearConvolveRenderState.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/scenario/effect/impl/state/LinearConvolveRenderState.java	2026-02-24 12:15:10
+@@ -25,7 +25,6 @@
+ 
+ package com.sun.scenario.effect.impl.state;
+ 
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.geom.Rectangle;
+ import com.sun.scenario.effect.Color4f;
+ import com.sun.scenario.effect.FilterContext;
+@@ -68,7 +67,7 @@
+          * Set the maximum linear convolve kernel size used in LinearConvolveRenderState.
+          * The default value is set to 64 if platform is an embedded system and 128 otherwise.
+          */
+-        final int defSize = PlatformUtil.isEmbedded() ? 64 : MAX_COMPILED_KERNEL_SIZE;
++        final int defSize = -1; // TODO: PlatformUtil.isEmbedded() ? 64 : MAX_COMPILED_KERNEL_SIZE;
+         int size = Integer.getInteger("decora.maxLinearConvolveKernelSize", defSize);
+         if (size > MAX_COMPILED_KERNEL_SIZE) {
+             System.out.println("Clamping maxLinearConvolveKernelSize to "

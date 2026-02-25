@@ -1,0 +1,13 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/MnemonicInfo.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/MnemonicInfo.java	2026-02-25 08:43:11
+@@ -262,9 +262,7 @@
+          * @param character the main key character
+          */
+         public MnemonicKeyCombination(String character) {
+-            super(com.sun.javafx.PlatformUtil.isMac()
+-                                  ? KeyCombination.META_DOWN
+-                                  : KeyCombination.ALT_DOWN);
++            // TODO: PlatformUtil.isMac()
+             this.character = character;
+         }
+ 

@@ -1,0 +1,11 @@
+--- src/javafx.graphics/javafx/scene/input/KeyCodeCombination.java	2026-01-27 06:40:48
++++ src/javafx.graphics/javafx/scene/input/KeyCodeCombination.java	2026-02-24 17:29:01
+@@ -277,7 +277,7 @@
+         ** On Mac we display these unicode symbols,
+         ** otherwise we default to the Text version of the char.
+         */
+-        if (com.sun.javafx.PlatformUtil.isMac()) {
++        if (false) { // TODO: com.sun.javafx.PlatformUtil.isMac()
+             switch (code) {
+                 case BACK_SPACE: return '\u232B';
+                 case ESCAPE: return '\u238B';

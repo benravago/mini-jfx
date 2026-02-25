@@ -1,0 +1,29 @@
+--- src/javafx.controls/com/sun/javafx/scene/control/behavior/TextFieldBehavior.java	2026-01-27 06:40:46
++++ src/javafx.controls/com/sun/javafx/scene/control/behavior/TextFieldBehavior.java	2026-02-25 08:59:20
+@@ -31,8 +31,6 @@
+ import com.sun.javafx.scene.control.Properties;
+ import com.sun.javafx.scene.control.skin.Utils;
+ 
+-import static com.sun.javafx.PlatformUtil.*;
+-
+ import javafx.beans.value.ChangeListener;
+ import javafx.beans.value.WeakChangeListener;
+ import javafx.event.ActionEvent;
+@@ -275,7 +273,7 @@
+                     // selection, and set the mark to be the other side and
+                     // the dot to be the new position.
+                     // everywhere else we just move the dot.
+-                    if (isMac()) {
++                    if (false) { // TODO: isMac()
+                         textField.extendSelection(i);
+                     } else {
+                         skin.positionCaret(hit, true);
+@@ -387,7 +385,7 @@
+     protected void mouseDoubleClick(HitInfo hit) {
+         final TextField textField = getNode();
+         textField.previousWord();
+-        if (isWindows()) {
++        if (false) { // TODO: isWindows()
+             textField.selectNextWord();
+         } else {
+             textField.selectEndOfNextWord();

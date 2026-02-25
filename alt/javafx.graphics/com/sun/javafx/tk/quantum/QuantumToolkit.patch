@@ -1,0 +1,26 @@
+--- src/javafx.graphics/com/sun/javafx/tk/quantum/QuantumToolkit.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/tk/quantum/QuantumToolkit.java	2026-02-24 17:37:42
+@@ -85,7 +85,6 @@
+ import com.sun.glass.ui.Screen;
+ import com.sun.glass.ui.Timer;
+ import com.sun.glass.ui.View;
+-import com.sun.javafx.PlatformUtil;
+ import com.sun.javafx.application.PlatformImpl;
+ import com.sun.javafx.embed.HostInterface;
+ import com.sun.javafx.geom.Path2D;
+@@ -160,13 +159,13 @@
+ 
+     static final boolean liveResize = ((Supplier<Boolean>) () -> {
+         boolean isSWT = "swt".equals(System.getProperty("glass.platform"));
+-        String result = (PlatformUtil.isMac() || PlatformUtil.isWindows()) && !isSWT ? "true" : "false";
++        String result = "?"; // TODO: (PlatformUtil.isMac() || PlatformUtil.isWindows()) && !isSWT ? "true" : "false";
+         return "true".equals(System.getProperty("javafx.live.resize", result));
+     }).get();
+ 
+     static final boolean drawInPaint = ((Supplier<Boolean>) () -> {
+         boolean isSWT = "swt".equals(System.getProperty("glass.platform"));
+-        String result = PlatformUtil.isMac() && isSWT ? "true" : "false";
++        String result = "?"; // TODO: PlatformUtil.isMac() && isSWT ? "true" : "false";
+         return "true".equals(System.getProperty("javafx.draw.in.paint", result));
+     }).get();
+ 

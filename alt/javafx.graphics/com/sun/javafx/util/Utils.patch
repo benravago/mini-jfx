@@ -1,22 +1,45 @@
---- sdk/javafx.graphics/com/sun/javafx/util/Utils.java	2021-10-16 18:21:20.000000000 -0400
-+++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2021-12-27 19:00:17.254165819 -0500
-@@ -975,19 +975,4 @@
-         return new String(dst, 0, dstIndex);
+--- src/javafx.graphics/com/sun/javafx/util/Utils.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/javafx/util/Utils.java	2026-02-24 17:35:20
+@@ -45,8 +45,6 @@
+ import javafx.stage.Window;
+ import java.math.BigDecimal;
+ import java.util.List;
+-import com.sun.javafx.PlatformUtil;
+-import com.sun.glass.utils.NativeLibLoader;
+ import com.sun.prism.impl.PrismSettings;
+ 
+ /**
+@@ -921,21 +919,21 @@
+      * Returns true if the operating system is a form of Windows.
+      */
+     public static boolean isWindows(){
+-        return PlatformUtil.isWindows();
++        return false; // TODO: PlatformUtil.isWindows();
      }
  
--    @SuppressWarnings("removal")
--    public static synchronized void loadNativeSwingLibrary() {
--        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
--            String libName = "prism_common";
--
--            if (PrismSettings.verbose) {
--                System.out.println("Loading Prism common native library ...");
--            }
--            NativeLibLoader.loadLibrary(libName);
--            if (PrismSettings.verbose) {
--                System.out.println("\tsucceeded.");
--            }
--            return null;
--        });
--    }
- }
+     /**
+      * Returns true if the operating system is a form of Mac OS.
+      */
+     public static boolean isMac(){
+-        return PlatformUtil.isMac();
++        return false; // TODO: PlatformUtil.isMac();
+     }
+ 
+     /**
+      * Returns true if the operating system is a form of Unix, including Linux.
+      */
+     public static boolean isUnix(){
+-        return PlatformUtil.isUnix();
++        return false; // TODO: PlatformUtil.isUnix();
+     }
+ 
+     /***************************************************************************
+@@ -1021,7 +1019,7 @@
+         if (PrismSettings.verbose) {
+             System.out.println("Loading Prism common native library ...");
+         }
+-        NativeLibLoader.loadLibrary(libName);
++        // TODO: NativeLibLoader.loadLibrary(libName);
+         if (PrismSettings.verbose) {
+             System.out.println("\tsucceeded.");
+         }

@@ -1,0 +1,32 @@
+--- src/javafx.graphics/com/sun/prism/sw/SWPipeline.java	2026-01-27 06:40:48
++++ src/javafx.graphics/com/sun/prism/sw/SWPipeline.java	2026-02-24 12:11:31
+@@ -26,11 +26,9 @@
+ package com.sun.prism.sw;
+ 
+ import com.sun.glass.ui.Screen;
+-import com.sun.glass.utils.NativeLibLoader;
+ import com.sun.prism.GraphicsPipeline;
+ import com.sun.prism.ResourceFactory;
+ import com.sun.prism.impl.PrismSettings;
+-import com.sun.javafx.PlatformUtil;
+ 
+ import java.util.HashMap;
+ import java.util.List;
+@@ -39,7 +37,7 @@
+ public final class SWPipeline extends GraphicsPipeline {
+ 
+     static {
+-        NativeLibLoader.loadLibrary("prism_sw");
++        // TODO: NativeLibLoader.loadLibrary("prism_sw");
+     }
+ 
+     @Override public boolean init() {
+@@ -74,7 +72,7 @@
+         if (factory == null) {
+             factory = new SWResourceFactory(screen);
+             factories.put(index, factory);
+-            if (PlatformUtil.isMac()) {
++            if (false) { // TODO: PlatformUtil.isMac()
+                 Map<String, Boolean> devDetails = getDeviceDetails();
+                 if (PrismSettings.defaultPipeline.equals("es2")) {
+                     devDetails.put("useMTLInGlassForSW", false);
