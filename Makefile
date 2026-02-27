@@ -25,8 +25,7 @@ patch = find alt/$(1) -name '*.patch' -exec patch -p0 -i {} ';'
 unzip = unzip -q $(SDK)/src.zip $(shell cat alt/$(1)/inc) -x $(shell cat alt/$(1)/exc) -d src 
 
 
-.DEFAULT_GOAL := lib/javafx.controls.jar
-
+.DEFAULT_GOAL := jars
 
 jdk: 
 	$(JDK)/bin/jlink --output $@ --add-modules $(JDK_MODULES)
@@ -34,6 +33,12 @@ jdk:
 jre: 
 	$(JDK)/bin/jlink --output $@ --add-modules $(JRE_MODULES)
     
+
+jars: lib/jfx.desktop.jar \
+      lib/javafx.base.jar \
+      lib/javafx.graphics.jar \
+      lib/javafx.controls.jar
+
 
 lib/javafx.controls.jar: bin/javafx.controls
 	$(call jar,$(@F))

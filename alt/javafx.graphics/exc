@@ -7,8 +7,10 @@
 */com/sun/javafx/font/coretext/*
 */com/sun/javafx/font/directwrite/*
 */com/sun/javafx/font/freetype/*
+*/com/sun/javafx/iio/bmp/*
 */com/sun/javafx/iio/ios/*
 */com/sun/javafx/iio/java2d/*
+*/com/sun/javafx/iio/jpeg/*
 */com/sun/prism/d3d/*
 */com/sun/prism/es2/*
 */com/sun/prism/j2d/*
@@ -20,6 +22,7 @@
 */com/sun/scenario/effect/impl/sw/sse/*
 */com/sun/javafx/application/WindowsHighContrastScheme.java
 */com/sun/javafx/font/AndroidFontFinder.java
+*/com/sun/javafx/font/DFontDecoder.java
 */com/sun/javafx/font/MacFontFinder.java
 */com/sun/javafx/font/WindowsFontMap.java
 */com/sun/glass/utils/NativeLibLoader.java

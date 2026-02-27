@@ -1,19 +1,20 @@
 --- src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2026-01-27 06:40:48
-+++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2026-02-24 11:57:13
-@@ -25,12 +25,10 @@
++++ src/javafx.graphics/com/sun/javafx/iio/ImageStorage.java	2026-02-26 15:51:47
+@@ -25,13 +25,9 @@
  
  package com.sun.javafx.iio;
  
 -import com.sun.javafx.PlatformUtil;
  import com.sun.javafx.iio.ImageFormatDescription.Signature;
- import com.sun.javafx.iio.bmp.BMPImageLoaderFactory;
+-import com.sun.javafx.iio.bmp.BMPImageLoaderFactory;
  import com.sun.javafx.iio.common.ImageTools;
  import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 -import com.sun.javafx.iio.ios.IosImageLoaderFactory;
- import com.sun.javafx.iio.jpeg.JPEGImageLoaderFactory;
+-import com.sun.javafx.iio.jpeg.JPEGImageLoaderFactory;
  import com.sun.javafx.iio.png.PNGImageLoaderFactory;
  import com.sun.javafx.logging.PlatformLogger;
-@@ -182,7 +180,7 @@
+ import com.sun.javafx.util.DataURI;
+@@ -182,7 +178,7 @@
      private Optional<ImageLoaderFactory> j2dImageLoaderFactory;
      private int maxSignatureLength;
  
@@ -22,7 +23,7 @@
  
      private static class InstanceHolder {
          static final ImageStorage INSTANCE = new ImageStorage();
-@@ -197,7 +195,7 @@
+@@ -197,14 +193,12 @@
              //On iOS we have single factory/ native loader
              //for all image formats
              loaderFactories = new ImageLoaderFactory[]{
@@ -31,7 +32,14 @@
              };
          } else {
              loaderFactories = new ImageLoaderFactory[]{
-@@ -560,7 +558,7 @@
+                 GIFImageLoaderFactory.getInstance(),
+-                JPEGImageLoaderFactory.getInstance(),
+                 PNGImageLoaderFactory.getInstance(),
+-                BMPImageLoaderFactory.getInstance()
+                 // Note: append ImageLoadFactory for any new format here.
+             };
+         }
+@@ -560,7 +554,7 @@
  
      private ImageLoader findImageLoader(InputStream stream, ImageLoadListener listener) throws IOException {
          if (isIOS) {
@@ -40,3 +48,5 @@
          }
  
          // We need a stream that supports the mark and reset methods, since J2DImageLoader
+Only in tmp/javafx.graphics/com/sun/javafx/iio: bmp
+Only in tmp/javafx.graphics/com/sun/javafx/iio: jpeg

@@ -1,5 +1,5 @@
 --- src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2026-01-27 06:40:48
-+++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2026-02-24 11:44:31
++++ src/javafx.graphics/com/sun/javafx/font/PrismFontFactory.java	2026-02-26 16:15:03
 @@ -38,8 +38,6 @@
  import java.util.Locale;
  
@@ -41,7 +41,44 @@
              if (fontFile != null) {
                  fr = createFontResource(null, fontFile);
                  if (fr != null) {
-@@ -726,7 +724,7 @@
+@@ -640,35 +638,7 @@
+         /* Still need decode the dfont (event when coretext is used)
+          * so that JFXFontFont can read it */
+         if (isMacOSX) {
+-            DFontDecoder decoder = null;
+-            if (name != null) {
+-                if (file.endsWith(".dfont")) {
+-                    decoder = new DFontDecoder();
+-                    try {
+-                        decoder.openFile();
+-                        decoder.decode(name);
+-                        decoder.closeFile();
+-                        file = decoder.getFile().getPath();
+-                    } catch (Exception e) {
+-                        file = null;
+-                        decoder.deleteFile();
+-                        decoder = null;
+-                        if (PrismFontFactory.debugFonts) {
+-                            e.printStackTrace();
+-                        }
+-                    }
+-                }
+-            }
+-            if (file != null) {
+-                fr = createFontResource(name, file);
+-            }
+-            if (decoder != null) {
+-                if (fr != null) {
+-                    addDecodedFont(fr);
+-                } else {
+-                    decoder.deleteFile();
+-                }
+-            }
++            // TODO: DFontDecoder support
+         } else {
+             fr = createFontResource(name, file);
+         }
+@@ -726,7 +696,7 @@
           */
          if (isWindows && name != null) {
              String lcName = name.toLowerCase();
@@ -50,7 +87,7 @@
              if (fontFile != null) {
                  fr = createFontResource(null, fontFile);
                  if (fr != null) {
-@@ -1652,10 +1650,7 @@
+@@ -1652,10 +1622,7 @@
                  }
  
              } else if (isMacOSX || isIOS) {
@@ -62,7 +99,7 @@
  
                  if (debugFonts) {
                      logFontInfo(" *** MACOS LOCATED FONTS:",
-@@ -1675,10 +1670,7 @@
+@@ -1675,10 +1642,7 @@
                                  familyToFontListMap);
                  }
              } else if (isAndroid) {
@@ -74,7 +111,7 @@
             } else { /* unrecognised OS */
                  fontToFileMap = tmpFontToFileMap;
                  return fontToFileMap;
-@@ -1695,7 +1687,7 @@
+@@ -1695,7 +1659,7 @@
              fontToFileMap = tmpFontToFileMap;
              if (isAndroid) {
                  populateFontFileNameMapGeneric(
@@ -83,7 +120,7 @@
              }
              populateFontFileNameMapGeneric(jreFontDir);
  
-@@ -1818,9 +1810,9 @@
+@@ -1818,9 +1782,9 @@
              if (isWindows) {
                  systemFontSize = getSystemFontSizeNative();
              } else if (isMacOSX || isIOS) {
@@ -95,7 +132,7 @@
              } else if (isEmbedded) {
                  try {
                      int screenDPI = Screen.getMainScreen().getResolutionY();
-@@ -1846,12 +1838,12 @@
+@@ -1846,12 +1810,12 @@
                          systemFontFamily = "Arial"; // play it safe.
                      }
                  } else if (isMacOSX || isIOS) {
